@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>@ViewBag.Title</title>
+
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/Font-Awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/vue/dist/vue.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function()
+        {
+            Vue.component('stationSelection',
+            {
+                template: '<div class="dropdown-menu" aria-labelledby="navbarStations">' +
+                          '<a v-for="station in this.sortedStations" :key="station.key" class="dropdown-item" href="#">{{station.name}}</a>' +
+                          '</div>',
+                props: ['stations'],
+                computed:
+                {
+                        sortedStations: function()
+                        {
+                            var dup = this.stations.slice();
+
+                            dup.sort(function(a, b)
+                            {
+                                var first = a['name'].toLowerCase();
+                                var second = b['name'].toLowerCase();
+
+                                return ((first < second) ? -1 : ((first > second) ? 1 : 0));
+                            });
+
+                            return dup;
+                        }
+                }
+            });
+
+            app = new Vue(
+            {
+                el: '#root',
+                data:
+                {
+                    stations: []
+                },
+                created: function() {
+                    this.$on('station-added', function(station) {
+                        this.stations.push(station);
+                    });
+
+                    this.$on('station-updated', function(station)
+                    {
+                        var index = this.stations.findIndex(function(e) { return e.id == station.id });
+
+                        this.$set(this.stations, index, station);
+                    });
+
+                    this.$on('station-removed', function(stationId)
+                    {
+                        var index = this.stations.findIndex(function(e) { return e.id == stationId });
+
+                        this.stations.splice(index, 1);
+                    });
+                },
+                mounted: function()
+                {
+                    this.loadData();
+                },
+                methods:
+                {
+                    loadData()
+                    {
+                        this.stations = [{ id: 1, name: 'foo' }, { id: 2, name: 'bar' }]; // TODO
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="root">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Weather Data</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarStations" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Stations
+                        </a>
+
+                        <station-selection :stations="stations"></station-selection>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    @RenderBody()
+</body>
+</html>

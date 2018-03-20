@@ -1,0 +1,13 @@
+{
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "v4.0.0",
+    "Font-Awesome": "5.0.8",
+    "vue": "v2.5.16"
+  },
+  "resolutions": {
+    "bootstrap": "v4.0.0",
+    "Font-Awesome": "5.0.8"
+  }
+}
