@@ -97,6 +97,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="#">Home</a>
                     </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarStations" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Stations
@@ -104,6 +105,26 @@
 
                         <station-selection :stations="stations"></station-selection>
                     </li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarMyAccount" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                My Account
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="navbarMyAccount">
+                                <a class="nav-link" href="/Profile">My Profile</a>
+                                <a class="nav-link" href="/Logout">Logout</a>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Login">Login</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>
