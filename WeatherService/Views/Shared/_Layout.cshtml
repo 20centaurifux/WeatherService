@@ -106,7 +106,21 @@
                         <station-selection :stations="stations"></station-selection>
                     </li>
 
-                    @if (User.Identity.IsAuthenticated)
+                    @if(User.IsInRole("Administrator"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Administration
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="navbarAdmin">
+                                <a class="nav-link" href="/ManageUserAccounts">User Accounts</a>
+                                <a class="nav-link" href="/ManageStations">Weather Stations</a>
+                            </div>
+                        </li>
+                    }
+
+                    @if(User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarMyAccount" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -9,7 +9,8 @@ namespace WeatherService.Data
         public WeatherDb() : base("WeatherData") { }
 
         public ITable<MetaInfo> MetaInfo => GetTable<MetaInfo>();
-        public ITable<User> User => GetTable<User>().LoadWith<User>(u => u.UserRole);
+        public ITable<User> User => GetTable<User>();
+        public ITable<UserInRole> UserInRole => GetTable<UserInRole>().LoadWith<UserInRole>(m => m.User).LoadWith<UserInRole>(m => m.Role);
         public ITable<UserRole> UserRole => GetTable<UserRole>();
     }
 }

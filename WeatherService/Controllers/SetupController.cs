@@ -26,48 +26,84 @@ namespace WeatherService.Controllers
             {
                 var info = db.MetaInfo.FirstOrDefault();
 
-                var gen = new PasswordGenerator(includeLowercase: true, includeUppercase: true, includeNumeric: true, includeSpecial: true, passwordLength: 8);
-                var password = gen.Next();
-
                 if (info == null)
                 {
-                    var adminRole = _roleManager.FindByNameAsync("Adminstrator").Result;
-
-                    if(adminRole == null)
-                    {
-                        adminRole = new UserRole() { Name = "Administrator" };
-
-                        _roleManager.CreateAsync(adminRole);
-                    }
-
-                    if (!_roleManager.RoleExistsAsync("Reader").Result)
-                    {
-                        _roleManager.CreateAsync(new UserRole() { Name = "Reader" });
-                    }
-
-                    var admin = new User() { UserName = "admin" };
-
-                    var result = _userManager.CreateAsync(admin, password).Result;
+                    var result = CreateDefaultRoles();
 
                     if(result.Succeeded)
                     {
-                        info = new MetaInfo() { DBRevision = 1 };
-                        db.Insert(info);
+                        var gen = new PasswordGenerator(includeLowercase: true, includeUppercase: true, includeNumeric: true, includeSpecial: true, passwordLength: 8);
+                        var password = gen.Next();
 
-                        message = string.Format("Upgraded to database revision 1. \"Admin\" account with password \"{0}\" created.", password);
+                        result = CreateAdminUser(password);
+
+                        if (result.Succeeded)
+                        {
+                            var admin = _userManager.FindByNameAsync("Admin").Result;
+
+                            if (admin == null)
+                            {
+                                message = "Admin account not found.";
+                            }
+                            else
+                            {
+                                result = _userManager.AddToRoleAsync(admin, "Administrator").Result;
+
+                                if (result.Succeeded)
+                                {
+                                    info = new MetaInfo() { DBRevision = 1 };
+                                    db.Insert(info);
+
+                                    message = string.Format("Upgraded to database revision 1. \"Admin\" account with password \"{0}\" created.", password);
+                                }
+                            }
+                        }
                     }
-                    else if(result.Errors.Count() > 0)
+
+                    if(!result.Succeeded)
                     {
-                        message = string.Join(" ", result.Errors.Select(e => e.Description));
-                    }
-                    else
-                    {
-                        message = "Couldn't create admin account.";
+                        message = ErrorMessageFromResult(result);
                     }
                 }
             }
 
             return Content(message);
+        }
+
+        private IdentityResult CreateDefaultRoles()
+        {
+            IdentityResult result = null;
+
+            foreach (var roleName in new string[] { "Administrator", "Reader" })
+            {
+                result = _roleManager.CreateAsync(new UserRole() { Name = roleName }).Result;
+
+                if(!result.Succeeded)
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        private IdentityResult CreateAdminUser(string password)
+        {
+            var adminRole = _roleManager.FindByNameAsync("Adminstrator").Result;
+
+            return _userManager.CreateAsync(new Models.User() { UserName = "Admin" }, password).Result;
+        }
+
+        private static string ErrorMessageFromResult(IdentityResult result)
+        {
+            var message = "Couldn't upgrade database.";
+
+            if (result.Errors.Count() > 0)
+            {
+                message = string.Join(" ", result.Errors.Select(e => e.Description));
+            }
+
+            return message;
         }
     }
 }

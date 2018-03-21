@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using LinqToDB.Mapping;
+using System.Collections.Generic;
 
 namespace WeatherService.Models
 {
@@ -11,12 +12,6 @@ namespace WeatherService.Models
         {
             Id = Guid.NewGuid().ToString();
         }
-
-        [Column(Name = "RoleId"), NotNull]
-        public string RoleId { get; set; }
-
-        [Association(ThisKey = "RoleId", OtherKey = "Id")]
-        public UserRole UserRole { get; set; }
 
         [Column(Name = "AccessFailedCount")]
         public override int AccessFailedCount { get => base.AccessFailedCount; set => base.AccessFailedCount = value; }
