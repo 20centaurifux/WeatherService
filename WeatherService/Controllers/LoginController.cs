@@ -19,6 +19,11 @@ namespace WeatherService.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
+            if(User.Identity.IsAuthenticated)
+            {
+                return Redirect("/Home");
+            }
+
             return View();
         }
 
