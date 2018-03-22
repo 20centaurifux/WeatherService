@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using LinqToDB.Mapping;
-using System.Collections.Generic;
 
 namespace WeatherService.Models
 {

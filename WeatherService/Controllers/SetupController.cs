@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WeatherService.Data;
 using WeatherService.Models;
 using LinqToDB;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WeatherService.Controllers
 {
@@ -18,6 +19,8 @@ namespace WeatherService.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var message = "Upgrade not required.";
