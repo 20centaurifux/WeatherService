@@ -10,8 +10,6 @@ namespace WeatherService
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentity<User, UserRole>();
@@ -20,24 +18,23 @@ namespace WeatherService
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                DataConnection.DefaultSettings = new Data.Linq2Dbsettings();
+                DataConnection.TurnTraceSwitchOn();
+                DataConnection.WriteTraceLine = (s1, s2) =>
+                {
+                    System.Diagnostics.Debug.WriteLine(s1, s2);
+                };
             }
 
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-
-            DataConnection.DefaultSettings = new Data.Linq2Dbsettings();
-            DataConnection.TurnTraceSwitchOn();
-            DataConnection.WriteTraceLine = (s1, s2) =>
-            {
-                System.Diagnostics.Debug.WriteLine(s1, s2);
-            };
         }
     }
 }
