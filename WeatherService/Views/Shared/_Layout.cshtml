@@ -9,12 +9,20 @@
 
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="~/lib/Font-Awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery.generateId/dist/generate-id.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/vue/dist/vue.min.js"></script>
+    <script src="~/lib/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/media/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/js/jquery.ConfirmDialog.js"></script>
 
     <script type="text/javascript">
+        var app = null;
+
         $(document).ready(function()
         {
             Vue.component('stationSelection',
@@ -43,7 +51,7 @@
                 }
             });
 
-            var app = new Vue(
+            app = new Vue(
             {
                 el: '#root',
                 data:
@@ -55,7 +63,7 @@
                         this.stations.push(station);
                     });
 
-                    this.$on('station-updated', function(station)
+                    this.$on('station-changed', function(station)
                     {
                         var index = this.stations.findIndex(function(e) { return e.id == station.id });
 
@@ -83,8 +91,7 @@
 	                    {
 		                    url: "/WeatherStations/Available",
                             type: "GET",
-		                    dataType: "json",
-		                    async: true,
+		                    dataType: "json"
                         })
                         .done(function(stations)
                         {
@@ -132,7 +139,7 @@
 
                             <div class="dropdown-menu" aria-labelledby="navbarAdmin">
                                 <a class="nav-link" href="/ManageUserAccounts">User Accounts</a>
-                                <a class="nav-link" href="/ManageStations">Weather Stations</a>
+                                <a class="nav-link" href="/WeatherStations">Weather Stations</a>
                             </div>
                         </li>
                     }

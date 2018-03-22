@@ -4,7 +4,9 @@
   "dependencies": {
     "bootstrap": "v4.0.0",
     "Font-Awesome": "5.0.8",
-    "vue": "v2.5.16"
+    "vue": "v2.5.16",
+    "datatables": "DataTables#1.10.16",
+    "jquery.generateId": "jquery.generate-id#v1.0.3"
   },
   "resolutions": {
     "bootstrap": "v4.0.0",
