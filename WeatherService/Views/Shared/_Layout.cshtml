@@ -20,7 +20,8 @@
             Vue.component('stationSelection',
             {
                 template: '<div class="dropdown-menu" aria-labelledby="navbarStations">' +
-                          '<a v-for="station in this.sortedStations" :key="station.key" class="dropdown-item" href="#">{{station.name}}</a>' +
+                          '<a v-for="station in this.sortedStations" :key="station.id" class="dropdown-item" href="#">{{station.name}}</a>' +
+                          '<span v-if="this.stations.length==0" class="dropdown-item disabled">No stations available.</span>' +
                           '</div>',
                 props: ['stations'],
                 computed:
@@ -42,7 +43,7 @@
                 }
             });
 
-            app = new Vue(
+            var app = new Vue(
             {
                 el: '#root',
                 data:
@@ -76,7 +77,23 @@
                 {
                     loadData()
                     {
-                        this.stations = [{ id: 1, name: 'foo' }, { id: 2, name: 'bar' }]; // TODO
+                        var self = this;
+
+                        $.ajax(
+	                    {
+		                    url: "/WeatherStations/Available",
+                            type: "GET",
+		                    dataType: "json",
+		                    async: true,
+                        })
+                        .done(function(stations)
+                        {
+                            self.stations = stations;
+                        })
+                        .fail(function()
+                        {
+                            alert("Couldn't receive station list, please try again later.");
+                        });
                     }
                 }
             });
