@@ -12,7 +12,9 @@
 
                 $(id).val(checked);
             }
-            });
+        });
+
+        $('#form_wrapper').show();
 
         @if(Model.HasTemperature)
         {
@@ -48,45 +50,47 @@
     });
 </script>
 
-<div class="form-group row">
-    <label asp-for="Name" class="col-2 col-form-label">Station Name</label>
-    <div class="col-10">
-        @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(m => m.Name, string.Empty, new { @class = "text-danger" })
-    </div>
-</div>
-
-<div class="form-group row">
-    <label asp-for="Location" class="col-2 col-form-label">Location</label>
-    <div class="col-10">
-        @Html.EditorFor(m => m.Location, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(m => m.Location, string.Empty, new { @class = "text-danger" })
-    </div>
-</div>
-
-@Html.HiddenFor(m => m.Id)
-<input type="hidden" id="HasTemperature" name="HasTemperature" value="false" />
-<input type="hidden" id="HasPressure" name="HasPressure" value="false" />
-<input type="hidden" id="HasHumidity" name="HasHumidity" value="false" />
-<input type="hidden" id="HasUV" name="HasUV" value="false" />
-
-<div class="form-group row" id="stationValueSelection">
-    <label for="location" class="col-2 col-form-label">Provided values</label>
-    <div class="col-10">
-        <select id="stationValues" multiple="multiple">
-            <option value="HasTemperature">Temperature</option>
-            <option value="HasPressure">Pressure</option>
-            <option value="HasHumidity">Humidity</option>
-            <option value="HasUV">UV</option>
-        </select>
-    </div>
-</div>
-
-@if (!string.IsNullOrEmpty(ViewBag.ValidationError))
-{
+<div id="form_wrapper" style="display:none;">
     <div class="form-group row">
+        <label asp-for="Name" class="col-2 col-form-label">Station Name</label>
         <div class="col-10">
-            <span class="text-danger">@ViewBag.ValidationError</span>
+            @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Name, string.Empty, new { @class = "text-danger" })
         </div>
     </div>
-}
+
+    <div class="form-group row">
+        <label asp-for="Location" class="col-2 col-form-label">Location</label>
+        <div class="col-10">
+            @Html.EditorFor(m => m.Location, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(m => m.Location, string.Empty, new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @Html.HiddenFor(m => m.Id)
+    <input type="hidden" id="HasTemperature" name="HasTemperature" value="false" />
+    <input type="hidden" id="HasPressure" name="HasPressure" value="false" />
+    <input type="hidden" id="HasHumidity" name="HasHumidity" value="false" />
+    <input type="hidden" id="HasUV" name="HasUV" value="false" />
+
+    <div class="form-group row" id="stationValueSelection">
+        <label for="location" class="col-2 col-form-label">Provided values</label>
+        <div class="col-10">
+            <select id="stationValues" multiple="multiple">
+                <option value="HasTemperature">Temperature</option>
+                <option value="HasPressure">Pressure</option>
+                <option value="HasHumidity">Humidity</option>
+                <option value="HasUV">UV</option>
+            </select>
+        </div>
+    </div>
+
+    @if(!string.IsNullOrEmpty(ViewBag.ValidationError))
+    {
+        <div class="form-group row">
+            <div class="col-10">
+                <span class="text-danger">@ViewBag.ValidationError</span>
+            </div>
+        </div>
+    }
+</div>
