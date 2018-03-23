@@ -9,7 +9,7 @@
             <td>{{station.id}}</td>
             <td>{{station.name}}</td>
             <td>
-                <button type="button" class="btn btn-info">Edit</button>
+                <edit-station-button :station="station"></edit-station-button>
                 <remove-station-button :station="station"></remove-station-button>
             </td>
         </tr>
@@ -22,6 +22,19 @@
             {
                 template: '#stationRow',
                 props: ['station']
+            });
+
+            Vue.component('editStationButton',
+            {
+                props: ['station'],
+                template: '<button class="btn btn-primary" @@click="editStation()">Edit</button>',
+                methods:
+                {
+                        editStation: function()
+                        {
+                            window.location.href = '/WeatherStations/Edit/' + this.station.id;
+                        }
+                }
             });
 
             Vue.component('removeStationButton',

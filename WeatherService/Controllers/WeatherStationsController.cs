@@ -23,9 +23,60 @@ namespace WeatherService.Controllers
             }
         }
 
+
+        [HttpGet("WeatherStations/Edit/{id}")]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Edit(string id)
+        {
+            using (var db = new WeatherDb())
+            {
+                var m = db.WeatherStation.FirstOrDefault(s => s.Id.Equals(id));
+
+                if(m == null)
+                {
+                    return NotFound();
+                }
+
+                return View("EditStation", m);
+            }
+        }
+
+        [HttpPost("WeatherStations/Update")]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Update(WeatherStation m)
+        {
+            if (TryValidateModel(m))
+            {
+                using (var transaction = new TransactionScope())
+                {
+                    using (var db = new WeatherDb())
+                    {
+                        if (db.WeatherStation.Any(s => s.Name.ToLower().Equals(m.Name.ToLower()) && !s.Id.Equals(m.Id)))
+                        {
+                            ViewData["ValidationError"] = "A weather station with the given name does already exist.";
+                        }
+                        else
+                        {
+                            db.Update(m);
+
+                            return Redirect("/WeatherStations");
+                        }
+                    }
+
+                    transaction.Complete();
+                }
+            }
+            else
+            {
+                ViewData["ValidationError"] = "Couldn't validate input, please check entered data.";
+            }
+
+            return View("EditStation", m);
+        }
+
         [HttpGet("WeatherStations/Create")]
         [Authorize(Roles = "Administrator")]
-        public IActionResult Create(string id)
+        public IActionResult Create()
         {
             return View("CreateStation", new WeatherStation() { Name = "New Station" });
         }

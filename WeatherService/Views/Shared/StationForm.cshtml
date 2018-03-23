@@ -4,24 +4,49 @@
     $(document).ready(function()
     {
         $('#stationValues').multiselect(
+        {
+            buttonWidth: '200px',
+            onChange: function(option, checked, select)
             {
-                buttonWidth: '200px',
-                onChange: function(option, checked, select)
-                {
-                    var id = '#' + $(option).val();
+                var id = '#' + $(option).val();
 
-                    $(id).val(checked);
-                }
+                $(id).val(checked);
+            }
             });
+
+        @if(Model.HasTemperature)
+        {
+            <text>
+            $('#stationValues').multiselect('select', 'HasTemperature');
+            $('#HasTemperature').val(true);
+            </text>
+        }
+
+        @if(Model.HasPressure)
+        {
+            <text>
+            $('#stationValues').multiselect('select', 'HasPressure');
+            $('#HasPressure').val(true);
+            </text>
+        }
+
+        @if(Model.HasHumidity)
+        {
+            <text>
+            $('#stationValues').multiselect('select', 'HasHumidity');
+            $('#HasHumidity').val(true);
+            </text>
+        }
+
+        @if(Model.HasUV)
+        {
+            <text>
+            $('#stationValues').multiselect('select', 'HasUV');
+            $('#HasUV').val(true);
+            </text>
+        }
     });
 </script>
-
-<div class="form-group row">
-    <label asp-for="Name" class="col-2 col-form-label">GUID</label>
-    <div class="col-10">
-        @Model.Id
-    </div>
-</div>
 
 <div class="form-group row">
     <label asp-for="Name" class="col-2 col-form-label">Station Name</label>
@@ -45,7 +70,7 @@
 <input type="hidden" id="HasHumidity" name="HasHumidity" value="false" />
 <input type="hidden" id="HasUV" name="HasUV" value="false" />
 
-<div class="form-group row">
+<div class="form-group row" id="stationValueSelection">
     <label for="location" class="col-2 col-form-label">Provided values</label>
     <div class="col-10">
         <select id="stationValues" multiple="multiple">
@@ -56,3 +81,12 @@
         </select>
     </div>
 </div>
+
+@if (!string.IsNullOrEmpty(ViewBag.ValidationError))
+{
+    <div class="form-group row">
+        <div class="col-10">
+            <span class="text-danger">@ViewBag.ValidationError</span>
+        </div>
+    </div>
+}
