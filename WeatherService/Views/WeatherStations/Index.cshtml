@@ -89,7 +89,11 @@
                 },
                 mounted: function()
                 {
-                    $('#weatherStations').DataTable();
+                    $('#weatherStations').DataTable(
+                    {
+                        "aoColumns": [{ "bSortable": true}, { "bSortable": true}, { "bSortable": false }],
+                        "order": [[ 1, "asc" ]]
+                    });
                 }
             });
         });
