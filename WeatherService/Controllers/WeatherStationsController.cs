@@ -23,7 +23,6 @@ namespace WeatherService.Controllers
             }
         }
 
-
         [HttpGet("WeatherStations/Edit/{id}")]
         [Authorize(Roles = "Administrator")]
         public IActionResult Edit(string id)

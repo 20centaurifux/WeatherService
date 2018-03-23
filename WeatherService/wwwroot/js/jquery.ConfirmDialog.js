@@ -10,14 +10,19 @@
 
       $(el).find('h5.modal-title').text(opts.title);
       $(el).find('div.modal-body').text(opts.text);
-      $(el).find('button.btn-primary').text(opts.confirmText).unbind('click');
-      $(el).find('button.btn-secondary').text(opts.cancelText);
 
-      $(el).find('button.btn-primary').unbind('click');
-      
+      $(el).find('button:eq(1)')
+        .unbind('click')
+        .text(opts.confirmText)
+        .attr('class', 'btn ' + opts.confirmClass);
+
+      $(el).find('button:eq(2)')
+        .text(opts.cancelText)
+        .attr('class', 'btn ' + opts.cancelClass);
+
       if(opts.onConfirm)
       {
-        $(el).find('button.btn-primary').bind('click', function()
+        $(el).find('button:eq(1)').bind('click', function()
         {
           if(opts.onConfirm())
           {
@@ -46,7 +51,13 @@
 
     if(!opts)
     {
-      opts = {title: 'Confirm', text: 'To be or not to be?', confirmText: 'Yes', cancelText: 'Cancel', onConfirm: null};
+      opts = {title: 'Confirm',
+              text: 'To be or not to be?',
+              confirmText: 'Yes',
+              confirmClass: 'btn-primary',
+              cancelText: 'Cancel',
+              cancelClass: 'btn-secondary',
+              onConfirm: null};
     }
 
     opts = $.extend(opts, options);
@@ -68,8 +79,8 @@
         '      </div>' +
         '      <div class="modal-body"></div>' +
         '      <div class="modal-footer">' +
-        '        <button type="button" class="btn btn-primary">' + opts.confirmText + '</button>' +
-        '        <button type="button" class="btn btn-secondary" data-dismiss="modal">' + opts.cancelText + '</button>' +
+        '        <button type="button">' + opts.confirmText + '</button>' +
+        '        <button type="button" data-dismiss="modal">' + opts.cancelText + '</button>' +
         '      </div>' +
         '    </div>' +
         '  </div>' +
