@@ -1,0 +1,128 @@
+﻿@model IEnumerable<WeatherService.Models.View.UserProfile>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Manager User Accounts";
+
+    <template id="userRow" inline-template>
+        <tr>
+            <td>{{user.username}}</td>
+            <td>{{user.email}}</td>
+            <td><input type="checkbox" v-model="user.isAdmin" onclick="return false;" /></td>
+            <td>
+                <edit-user-button :user="user"></edit-user-button>
+                <remove-user-button :user="user"></remove-user-button>
+            </td>
+        </tr>
+    </template>
+
+    <script>
+        $(document).ready(function()
+        {
+            Vue.component('userRow',
+            {
+                template: '#userRow',
+                props: ['user']
+            });
+
+            Vue.component('editUserButton',
+            {
+                props: ['user'],
+                template: '<button class="btn btn-primary" @@click="editUser()">Edit</button>',
+                methods:
+                {
+                        editUser: function()
+                        {
+                            window.location.href = '/Accounts/Edit/' + this.user.id;
+                        }
+                }
+            });
+
+            Vue.component('removeUserButton',
+            {
+	            props: ['user'],
+	            template: '<button class="btn btn-danger" @@click="removeUser()">Remove</button>',
+	            methods:
+	            {
+		            removeUser: function()
+                    {
+                        var self = this;
+
+                        $('#page').confirmDialog(
+                        {
+                            title: 'Delete user',
+                            text: 'Do you really want to delete this user?',
+                            confirmText: 'Yes, delete it!',
+                            confirmClass: 'btn-danger',
+                            onConfirm: function()
+                            {
+                                $.ajax(
+	                            {
+		                            url: "/Accounts/" + self.user.id,
+                                    type: "DELETE"
+                                })
+                                .done(function(user)
+                                {
+                                    $('#userTable').DataTable().row($(self.$el).closest('tr')).remove().draw();
+                                    $('#page').confirmDialog('hide');
+                                })
+                                .fail(function()
+                                {
+                                    alert("Couldn't delete user.");
+                                });
+
+                                return false;
+                            }
+                        }).confirmDialog('show');
+		            }
+	            }
+            });
+
+            var pageApp = new Vue(
+            {
+                el: '#page',
+                data:
+                {
+                    users: @Json.Serialize(Model)
+                },
+                mounted: function()
+                {
+                    $('#userTable').DataTable(
+                    {
+                        "aoColumns": [{ "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": false }],
+                        "order": [[ 0, "asc" ]]
+                    });
+                }
+            });
+        });
+    </script>
+
+    <div id="page" class="container">
+        <div class="row">
+            <div class="col-12">
+                <table id="userTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Admin</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="user in this.users"
+                            :user="user"
+                            :key="user.id"
+                            is="user-row"></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:5px; margin-bottom:5px;">
+            <div class="col-2 offset-5">
+                <a class="btn btn-primary" href="/Accounts/Create">Create new user</a>
+            </div>
+        </div>
+    </div>
+}

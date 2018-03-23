@@ -57,5 +57,10 @@ namespace WeatherService.Models
 
         [Column(Name = "UserName")]
         public override string UserName { get => base.UserName; set => base.UserName = value; }
+
+        public static View.UserProfile ToViewModel(User user)
+        {
+            return new View.UserProfile() { Id = user.Id, Username = user.UserName, Email = user.Email };
+        }
     }
 }

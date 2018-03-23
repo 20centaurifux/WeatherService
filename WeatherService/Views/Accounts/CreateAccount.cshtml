@@ -1,0 +1,21 @@
+﻿@model WeatherService.Models.View.UserProfile
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create User Account";
+}
+
+<div class="container">
+    <h1>Edit Account</h1>
+
+    <form action="/Accounts/Create" method="post">
+        @Html.Partial("~/Views/Shared/AccountForm.cshtml", Model)
+
+        <div class="form-group row">
+            <div class="col-10">
+                <button type="submit" class="btn btn-primary">Create user account</button>
+                <a class="btn btn-secondary" href="/Accounts">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
