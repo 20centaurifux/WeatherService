@@ -8,6 +8,7 @@
         <tr>
             <td>{{station.id}}</td>
             <td>{{station.name}}</td>
+            <td><input type="checkbox" v-model="station.isPublic" onclick="return false;" /></td>
             <td>
                 <edit-station-button :station="station"></edit-station-button>
                 <remove-station-button :station="station"></remove-station-button>
@@ -107,6 +108,7 @@
                         <tr>
                             <th>GUID</th>
                             <th>Name</th>
+                            <th>Public</th>
                             <th></th>
                         </tr>
                     </thead>
