@@ -1,0 +1,30 @@
+﻿@model WeatherService.Models.WeatherStation
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create Station";
+}
+
+<div class="container">
+    <h1>Create new station</h1>
+
+    <form asp-route="/WeatherStations/Create" method="post">
+        @Html.Partial("~/Views/Shared/StationForm.cshtml", Model)
+
+        @if(!string.IsNullOrEmpty(ViewBag.ValidationError))
+        {
+            <div class="form-group row">
+                <div class="col-10">
+                    <span class="text-danger">@ViewBag.ValidationError</span>
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+            <div class="col-10">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a class="btn btn-secondary" href="/WeatherStations">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

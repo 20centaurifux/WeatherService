@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using WeatherService.Data;
+using WeatherService.Models;
 using LinqToDB;
+using System.Transactions;
 
 namespace WeatherService.Controllers
 {
@@ -19,6 +21,46 @@ namespace WeatherService.Controllers
 
                 return View(q.ToArray());
             }
+        }
+
+        [HttpGet("WeatherStations/Create")]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Create(string id)
+        {
+            return View("CreateStation", new WeatherStation() { Name = "New Station" });
+        }
+
+        [HttpPost("WeatherStations/Create")]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Create(WeatherStation m)
+        {
+            if (TryValidateModel(m))
+            {
+                using (var transaction = new TransactionScope())
+                {
+                    using (var db = new WeatherDb())
+                    {
+                        if(db.WeatherStation.Any(s => s.Name.ToLower().Equals(m.Name.ToLower())))
+                        {
+                            ViewData["ValidationError"] = "A weather station with the given name does already exist.";
+                        }
+                        else
+                        {
+                            db.Insert(m);
+
+                            return Redirect("/WeatherStations");
+                        }
+                    }
+
+                    transaction.Complete();
+                }
+            }
+            else
+            {
+                ViewData["ValidationError"] = "Couldn't validate input, please check entered data.";
+            }
+
+            return View("CreateStation", m);
         }
 
         [HttpDelete("WeatherStations/{id?}")]

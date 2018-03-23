@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using LinqToDB.Mapping;
+using System.ComponentModel.DataAnnotations;
 
 namespace WeatherService.Models
 {
@@ -13,13 +14,17 @@ namespace WeatherService.Models
         }
 
         [PrimaryKey]
+        [StringLength(36)]
         [Column(Name = "Id")]
         public string Id { get; set; }
 
+        [Required]
+        [StringLength(64)]
         [Column(Name = "Name")]
         public string Name { get; set; }
 
         [Column(Name = "Location")]
+        [StringLength(64)]
         public string Location { get; set; }
 
         [Column(Name = "Latitude")]

@@ -5,15 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\bootstrap-multiselect\tests\**" />
+    <Compile Remove="wwwroot\lib\bootstrap-multiselect\types\**" />
     <Compile Remove="wwwroot\lib\vue\packages\**" />
     <Compile Remove="wwwroot\lib\vue\test\**" />
     <Compile Remove="wwwroot\lib\vue\types\test\**" />
+    <Content Remove="wwwroot\lib\bootstrap-multiselect\tests\**" />
+    <Content Remove="wwwroot\lib\bootstrap-multiselect\types\**" />
     <Content Remove="wwwroot\lib\vue\packages\**" />
     <Content Remove="wwwroot\lib\vue\test\**" />
     <Content Remove="wwwroot\lib\vue\types\test\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap-multiselect\tests\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap-multiselect\types\**" />
     <EmbeddedResource Remove="wwwroot\lib\vue\packages\**" />
     <EmbeddedResource Remove="wwwroot\lib\vue\test\**" />
     <EmbeddedResource Remove="wwwroot\lib\vue\types\test\**" />
+    <None Remove="wwwroot\lib\bootstrap-multiselect\tests\**" />
+    <None Remove="wwwroot\lib\bootstrap-multiselect\types\**" />
     <None Remove="wwwroot\lib\vue\packages\**" />
     <None Remove="wwwroot\lib\vue\test\**" />
     <None Remove="wwwroot\lib\vue\types\test\**" />

@@ -82,22 +82,30 @@
     </script>
 
     <div id="page" class="container">
-        <br />
+        <div class="row">
+            <div class="col-12">
+                <table id="weatherStations" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>GUID</th>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="station in this.stations"
+                            :station="station"
+                            :key="station.id"
+                            is="station-row"></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-        <table id="weatherStations" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>GUID</th>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="station in this.stations"
-                    :station="station"
-                    :key="station.id"
-                    is="station-row"></tr>
-            </tbody>
-        </table>
+        <div class="row" style="margin-top:5px; margin-bottom:5px;">
+            <div class="col-2 offset-5">
+                <a class="btn btn-primary" href="/WeatherStations/Create">Create new station</a>
+            </div>
+        </div>
     </div>
 }

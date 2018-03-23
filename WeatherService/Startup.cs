@@ -16,6 +16,7 @@ namespace WeatherService
             services.AddTransient<IUserStore<User>, UserStore<User>>();
             services.AddTransient<IRoleStore<UserRole>, UserRoleStore<UserRole>>();
             services.AddMvc();
+            services.AddMvc(options => options.MaxModelValidationErrors = 1);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
