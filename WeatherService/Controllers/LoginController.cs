@@ -24,7 +24,14 @@ namespace WeatherService.Controllers
                 return Redirect("/Home");
             }
 
-            return View();
+            var m = new Login();
+
+            if(Request.Query.ContainsKey("ReturnUrl"))
+            {
+                m.ReturnUrl = Request.Query["ReturnUrl"];
+            }
+
+            return View(m);
         }
 
         [HttpPost]
@@ -35,6 +42,11 @@ namespace WeatherService.Controllers
 
             if(result.Succeeded)
             {
+                if (!string.IsNullOrEmpty(m.ReturnUrl) && Url.IsLocalUrl(m.ReturnUrl))
+                {
+                    return Redirect(m.ReturnUrl);
+                }
+
                 return Redirect("/Home");
             }
 
