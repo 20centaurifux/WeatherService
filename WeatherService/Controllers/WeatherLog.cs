@@ -7,6 +7,7 @@ using WeatherService.Models;
 using WeatherService.Models.Api;
 using LinqToDB;
 using Microsoft.AspNetCore.Authorization;
+using WeatherService.Security;
 
 namespace WeatherService.Controllers
 {
@@ -14,10 +15,22 @@ namespace WeatherService.Controllers
     [Route("api/WeatherLog/{id}")]
     public class WeatherLog : Controller
     {
+        private ApiAuthenticationRequestData _apiAuthenticationData;
+
+        public WeatherLog(ApiAuthenticationRequestData apiAuthenticationData)
+        {
+            _apiAuthenticationData = apiAuthenticationData;
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Index(string id, [FromBody]IEnumerable<LogValue> values)
         {
+            if(!_apiAuthenticationData.StationId.Equals(id))
+            {
+                return Unauthorized();
+            }
+
             using (var transaction = new TransactionScope())
             {
                 using (var db = new WeatherDb())

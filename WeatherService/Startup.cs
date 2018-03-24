@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherService.Models;
 using WeatherService.Data;
-using Microsoft.AspNetCore.Http;
+using WeatherService.Security;
 
 namespace WeatherService
 {
@@ -16,6 +16,7 @@ namespace WeatherService
             services.AddIdentity<User, UserRole>();
             services.AddTransient<IUserStore<User>, UserStore<User>>();
             services.AddTransient<IRoleStore<UserRole>, UserRoleStore<UserRole>>();
+            services.AddScoped<ApiAuthenticationRequestData>();
             services.AddMvc(options => options.MaxModelValidationErrors = 1);
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Login");
             services.AddAuthentication();
@@ -37,6 +38,7 @@ namespace WeatherService
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseApiAuthentication(new ApiAuthenticationOptions() { Timeout = 604800 });
             app.UseMvcWithDefaultRoute();
         }
     }
