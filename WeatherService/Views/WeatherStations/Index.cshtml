@@ -5,7 +5,7 @@
     ViewBag.Title = "Manage Stations";
 
     <template id="stationRow" inline-template>
-        <tr>
+        <tr v-bind:data-id="station.id">
             <td>{{station.id}}</td>
             <td>{{station.name}}</td>
             <td><input type="checkbox" v-model="station.isPublic" onclick="return false;" /></td>
@@ -19,10 +19,20 @@
     <script>
         $(document).ready(function()
         {
+            var pageApp = null;
+
             Vue.component('stationRow',
             {
                 template: '#stationRow',
-                props: ['station']
+                props: ['station'],
+                destroyed: function()
+                {
+                    $('#weatherStations').DataTable().draw();
+
+                    var el = $("tr[data-id='" + this.station.id + "']");
+
+                    $('#weatherStations').DataTable().row(el).remove().draw();
+                }
             });
 
             Vue.component('editStationButton',
@@ -61,11 +71,10 @@
 		                            url: "/WeatherStations/" + self.station.id,
                                     type: "DELETE"
                                 })
-                                .done(function(stations)
+                                .done(function()
                                 {
-                                    $('#weatherStations').DataTable().row($(self.$el).closest('tr')).remove().draw();
-
                                     app.$emit('station-removed', self.station.id);
+                                    pageApp.$emit('station-removed', self.station.id);
 
                                     $('#page').confirmDialog('hide');
                                 })
@@ -81,7 +90,7 @@
 	            }
             });
 
-            var pageApp = new Vue(
+            pageApp = new Vue(
             {
                 el: '#page',
                 data:
@@ -94,6 +103,14 @@
                     {
                         "aoColumns": [{ "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": false }],
                         "order": [[ 1, "asc" ]]
+                    });
+                },
+                created: function()
+                {
+                    this.$on('station-removed', function(stationId)
+                    {
+                        var index = this.stations.findIndex(function(e) { return e.id == stationId });
+                        this.stations.splice(index, 1);
                     });
                 }
             });

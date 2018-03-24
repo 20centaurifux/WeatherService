@@ -5,7 +5,7 @@
     ViewBag.Title = "Manager User Accounts";
 
     <template id="userRow" inline-template>
-        <tr>
+        <tr v-bind:data-id="user.id">
             <td>{{user.username}}</td>
             <td>{{user.email}}</td>
             <td><input type="checkbox" v-model="user.isAdmin" onclick="return false;" /></td>
@@ -19,10 +19,20 @@
     <script>
         $(document).ready(function()
         {
+            var pageApp = null;
+
             Vue.component('userRow',
             {
                 template: '#userRow',
-                props: ['user']
+                props: ['user'],
+                destroyed: function()
+                {
+                    $('#userTable').DataTable().draw();
+
+                    var el = $("tr[data-id='" + this.user.id + "']");
+
+                    $('#userTable').DataTable().row(el).remove().draw();
+                }
             });
 
             Vue.component('editUserButton',
@@ -61,9 +71,10 @@
 		                            url: "/Accounts/" + self.user.id,
                                     type: "DELETE"
                                 })
-                                .done(function(user)
+                                .done(function()
                                 {
-                                    $('#userTable').DataTable().row($(self.$el).closest('tr')).remove().draw();
+                                    pageApp.$emit('user-removed', self.user.id);
+
                                     $('#page').confirmDialog('hide');
                                 })
                                 .fail(function()
@@ -78,7 +89,7 @@
 	            }
             });
 
-            var pageApp = new Vue(
+            pageApp = new Vue(
             {
                 el: '#page',
                 data:
@@ -91,6 +102,14 @@
                     {
                         "aoColumns": [{ "bSortable": true }, { "bSortable": true }, { "bSortable": false }, { "bSortable": false }],
                         "order": [[ 0, "asc" ]]
+                    });
+                },
+                created: function()
+                {
+                    this.$on('user-removed', function(userId)
+                    {
+                        var index = this.users.findIndex(function(e) { return e.id == userId });
+                        this.users.splice(index, 1);
                     });
                 }
             });

@@ -166,7 +166,7 @@ namespace WeatherService.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
-            return View("CreateAccount", new UserProfile() { Username = "John Doe", IsAdmin = false });
+            return View("CreateAccount", new UserProfile() { Username = "JohnDoe", IsAdmin = false });
         }
 
         [HttpPost("Accounts/Create")]
