@@ -17,7 +17,7 @@ namespace WeatherService.Controllers
             using (var db = new WeatherDb())
             {
                 var q = from s in db.WeatherStation
-                        select s;
+                        select s.ToPublicStationData();
 
                 return View(q.ToArray());
             }
@@ -141,7 +141,9 @@ namespace WeatherService.Controllers
                     q = q.Where(s => s.IsPublic);
                 }
 
-                return Json(q.ToArray());
+                var stations = q.Select(s => s.ToPublicStationData());
+
+                return Json(stations.ToArray());
             }
         }
     }

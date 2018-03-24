@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using LinqToDB.Mapping;
 using System.ComponentModel.DataAnnotations;
 
@@ -22,6 +21,10 @@ namespace WeatherService.Models
         [StringLength(64)]
         [Column(Name = "Name")]
         public string Name { get; set; }
+
+        [StringLength(64)]
+        [Column(Name = "Secret")]
+        public string Secret { get; set; }
 
         [Column(Name = "Location")]
         [StringLength(64)]
@@ -47,5 +50,20 @@ namespace WeatherService.Models
 
         [Column(Name = "HasUV")]
         public bool HasUV { get; set; }
+
+        public PublicStationData ToPublicStationData()
+        {
+            return new PublicStationData()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Location = this.Location,
+                IsPublic = this.IsPublic,
+                HasTemperature = this.HasTemperature,
+                HasHumidity = this.HasHumidity,
+                HasPressure = this.HasPressure,
+                HasUV = this.HasUV
+            };
+        }
     }
 }
