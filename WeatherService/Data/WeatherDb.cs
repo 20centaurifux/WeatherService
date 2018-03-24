@@ -13,5 +13,6 @@ namespace WeatherService.Data
         public ITable<UserInRole> UserInRole => GetTable<UserInRole>().LoadWith<UserInRole>(m => m.User).LoadWith<UserInRole>(m => m.Role);
         public ITable<UserRole> UserRole => GetTable<UserRole>();
         public ITable<WeatherStation> WeatherStation => GetTable<WeatherStation>();
+        public ITable<LogEntry> LogEntry => GetTable<LogEntry>();
     }
 }
