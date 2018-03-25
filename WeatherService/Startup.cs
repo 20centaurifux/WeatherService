@@ -18,7 +18,12 @@ namespace WeatherService
             services.AddTransient<IRoleStore<UserRole>, UserRoleStore<UserRole>>();
             services.AddScoped<ApiAuthenticationRequestData>();
             services.AddMvc(options => options.MaxModelValidationErrors = 1);
-            services.ConfigureApplicationCookie(options => options.LoginPath = "/Login");
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Login";
+                options.LogoutPath = "/Logout";
+                options.AccessDeniedPath = "/Error/AccessDenied";
+            });
             services.AddAuthentication();
         }
 
@@ -39,6 +44,7 @@ namespace WeatherService
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseApiAuthentication(new ApiAuthenticationOptions() { Timeout = 604800 });
+            app.UseStatusCodePagesWithReExecute("/Error", "?statusCode={0}");
             app.UseMvcWithDefaultRoute();
         }
     }
