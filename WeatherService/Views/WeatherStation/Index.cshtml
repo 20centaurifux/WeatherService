@@ -1,0 +1,130 @@
+﻿@model WeatherService.Models.WeatherStation
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.Name;
+
+    <script type="text/javascript">
+        $(document).ready(function()
+        {
+            var table = $(valuesTable).DataTable(
+            {
+                searching: false,
+                pageLength: 50,
+                ajax:
+                {
+                        url: '/WeatherStation/@Model.Id/Values',
+                        type: "GET",
+                        data: function()
+                        {
+                            return { from: $("#dateFrom").val(), to: $("#dateTo").val() }
+                        }
+                }
+            });
+
+            function isDate(str)
+            {
+                return str.match(/^\d{4}\-\d{1,2}\-\d{1,2}$/) != null;
+            }
+
+            function sanitizeFromDate()
+            {
+                var from = $("#dateFrom").val();
+                var to = $("#dateTo").val();
+
+                if (isDate(from) && isDate(to))
+                {
+                    if (from > to)
+                    {
+                        $("#dateTo").val(from);
+                    }
+                }
+                else if (isDate(to))
+                {
+                    $("#dateFrom").val(to);
+                }
+                else
+                {
+                    $("#dateTo").val(from);
+                }
+            }
+
+            function sanitizeToDate()
+            {
+                var from = $("#dateFrom").val();
+                var to = $("#dateTo").val();
+
+                if (isDate(from) && isDate(to))
+                {
+                    if (to < from)
+                    {
+                        $("#dateFrom").val(to);
+                    }
+                }
+                else if (isDate(from))
+                {
+                    $("#dateTo").val(from);
+                }
+                else
+                {
+                    $("#dateFrom").val(to);
+                }
+            }
+
+            $("#dateFrom").change(function()
+            {
+                sanitizeFromDate();
+                table.ajax.reload();
+            });
+
+            $("#dateTo").change(function()
+            {
+                sanitizeToDate();
+                table.ajax.reload();
+            });
+        });
+    </script>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12" style="text-align:center;"><h3>@Model.Name</h3></div>
+            <div class="col-12" style="text-align:center;"><h4 class="text-info">@Model.Location</h4></div>
+        </div>
+
+        <div class="row filter">
+            <div class="col-12">
+                <h5>Filter</h5>
+            </div>
+
+            <div class="col-3">
+                <label for="dateFrom">From</label>
+                <input type="date" class="form-control" id="dateFrom" value="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="col-3">
+                <label for="dateTo">To</label>
+                <input type="date" class="form-control" id="dateTo" value="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-12">
+                <table id="valuesTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Temperature</th>
+                            <th>Pressure</th>
+                            <th>Humidity</th>
+                            <th>UV</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

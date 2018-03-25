@@ -12,6 +12,14 @@
     <link href="~/lib/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
 
+    <style type="text/css">
+        div.filter
+        {
+            border: solid 1px #e4e4e4;
+            padding: 5px;
+        }
+    </style>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
@@ -34,7 +42,7 @@
             Vue.component('stationSelection',
             {
                 template: '<div class="dropdown-menu" aria-labelledby="navbarStations">' +
-                          '<a v-for="station in this.sortedStations" :key="station.id" class="dropdown-item" href="#">{{station.name}}</a>' +
+                          '<a v-for="station in this.sortedStations" :key="station.id" class="dropdown-item" v-bind:href="station.url">{{station.name}}</a>' +
                           '<span v-if="this.stations.length==0" class="dropdown-item disabled">No stations available.</span>' +
                           '</div>',
                 props: ['stations'],
@@ -42,7 +50,7 @@
                 {
                         sortedStations: function()
                         {
-                            var dup = this.stations.slice();
+                            var dup = this.stations.map(s => $.extend(s, {url: '/WeatherStation/' + s['id'] }));
 
                             dup.sort(function(a, b)
                             {
