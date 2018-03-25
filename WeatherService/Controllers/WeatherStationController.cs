@@ -23,7 +23,7 @@ namespace WeatherService.Controllers
                     return NotFound();
                 }
 
-                if (station.IsPublic && !User.Identity.IsAuthenticated)
+                if (!station.IsPublic && !User.Identity.IsAuthenticated)
                 {
                     return Forbid();
                 }
@@ -45,7 +45,7 @@ namespace WeatherService.Controllers
                     return NotFound();
                 }
 
-                if (station.IsPublic && !User.Identity.IsAuthenticated)
+                if (!station.IsPublic && !User.Identity.IsAuthenticated)
                 {
                     return Forbid();
                 }
