@@ -24,8 +24,6 @@ namespace WeatherService.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Index()
         {
-            var m = new List<UserProfile>();
-
             using (var db = new WeatherDb())
             {
                 return View(db.User.Select(u => ToUserProfile(u)).ToArray());

@@ -73,7 +73,8 @@
                     stations: []
                 },
                 created: function() {
-                    this.$on('station-added', function(station) {
+                    this.$on('station-added', function(station)
+                    {
                         this.stations.push(station);
                     });
 
@@ -166,7 +167,7 @@
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="navbarMyAccount">
-                                <a class="nav-link" href="/Profile">My Profile</a>
+                                <a class="nav-link" href="/UserProfile">My Profile</a>
                                 <a class="nav-link" href="/Logout">Logout</a>
                             </div>
                         </li>

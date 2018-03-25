@@ -25,10 +25,14 @@ namespace WeatherService.Models.View
         [StringLength(64)]
         public string Email { get; set; }
 
-        [EmailAddress]
         [StringLength(64)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+
+        [StringLength(64)]
+        [DataType(DataType.Password)]
+        public string Password2 { get; set; }
 
         public bool IsAdmin { get; set; }
     }

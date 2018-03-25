@@ -1,0 +1,46 @@
+﻿@model WeatherService.Models.View.UserProfile
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "My Profile";
+}
+
+<div class="container">
+    <h3>Hi @Model.Username, please feel free to change your user profile.</h3>
+
+    <br />
+
+    <form id="profileForm" action="/UserProfile" method="post">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Username)
+
+        <div class="form-group row">
+            <label asp-for="Name" class="col-2 col-form-label">Email</label>
+            <div class="col-10">
+                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(m => m.Email, string.Empty, new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Password" class="col-2 col-form-label">Password</label>
+            <div class="col-10">
+                <input id="password" type="password" class="form-control" name="Password" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Password2" class="col-2 col-form-label">Repeat password</label>
+            <div class="col-10">
+                <input id="password2" type="password" class="form-control" name="Password2" data-rule-equalTo="#password" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="Password2" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-10">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </form>
+</div>
