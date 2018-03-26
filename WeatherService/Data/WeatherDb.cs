@@ -6,7 +6,7 @@ namespace WeatherService.Data
 {
     public class WeatherDb : DataConnection
     {
-        public WeatherDb() : base("WeatherData") { }
+        public WeatherDb() : base(Linq2Dbsettings.DEFAULT_CONFIGURATION) { }
 
         public ITable<MetaInfo> MetaInfo => GetTable<MetaInfo>();
         public ITable<User> User => GetTable<User>();
