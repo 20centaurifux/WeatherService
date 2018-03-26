@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Http;
 using WeatherService.Data;
 using Microsoft.Extensions.Options;
 
-namespace WeatherService.Security
+namespace WeatherService.Security.ApiAuthentication
 {
-    public class ApiAuthenticationMiddleware
+    public class Middleware
     {
         private readonly RequestDelegate _next;
-        private readonly ApiAuthenticationOptions _options;
+        private readonly ApiOptions _options;
 
-        public ApiAuthenticationMiddleware(RequestDelegate next, IOptions<ApiAuthenticationOptions> options)
+        public Middleware(RequestDelegate next, IOptions<ApiOptions> options)
         {
             _next = next;
             _options = options.Value;
         }
 
-        public async Task Invoke(HttpContext context, ApiAuthenticationRequestData apiAuthenticationData)
+        public async Task Invoke(HttpContext context, RequestData apiAuthenticationData)
         {
             var path = context.Request.Path.ToString();
 
@@ -61,11 +61,11 @@ namespace WeatherService.Security
             return context.Request.Path.ToString().ToLower().StartsWith("/api");
         }
 
-        private ApiAuthenticationRequestData ExtractAuthenticationData(HttpContext context)
+        private RequestData ExtractAuthenticationData(HttpContext context)
         {
             var headers = context.Request.Headers;
 
-            return new ApiAuthenticationRequestData()
+            return new RequestData()
             {
                 StationId = headers["X-WeatherStation-SenderId"],
                 Timestamp = Convert.ToInt64(headers["X-WeatherStation-Timestamp"]),
@@ -73,7 +73,7 @@ namespace WeatherService.Security
             };
         }
 
-        private bool ValidateRequest(ApiAuthenticationRequestData data)
+        private bool ValidateRequest(RequestData data)
         {
             var requestTimestamp = Utils.DateTimeConverter.UnixTimestampToDateTime(data.Timestamp);
             var success = false;

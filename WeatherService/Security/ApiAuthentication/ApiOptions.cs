@@ -1,18 +1,18 @@
 ﻿using System;
 using IniParser.Model;
 
-namespace WeatherService.Security
+namespace WeatherService.Security.ApiAuthentication
 {
-    public class ApiAuthenticationOptions
+    public class ApiOptions
     {
-        public ApiAuthenticationOptions()
+        public ApiOptions()
         {
             Timeout = 15;
         }
 
-        public static ApiAuthenticationOptions FromConfig(KeyDataCollection config)
+        public static ApiOptions FromConfig(KeyDataCollection config)
         {
-            var options = new ApiAuthenticationOptions();
+            var options = new ApiOptions();
 
             try
             {

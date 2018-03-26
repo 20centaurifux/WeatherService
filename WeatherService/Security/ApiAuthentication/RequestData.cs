@@ -1,6 +1,6 @@
-﻿namespace WeatherService.Security
+﻿namespace WeatherService.Security.ApiAuthentication
 {
-    public class ApiAuthenticationRequestData
+    public class RequestData
     {
         public string StationId { get; set; }
         public long Timestamp { get; set; }

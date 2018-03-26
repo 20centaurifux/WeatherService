@@ -2,12 +2,12 @@
 using System.Transactions;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.Api;
+using WeatherService.Security.ApiAuthentication;
 using LinqToDB;
-using Microsoft.AspNetCore.Authorization;
-using WeatherService.Security;
 
 namespace WeatherService.Controllers
 {
@@ -15,9 +15,9 @@ namespace WeatherService.Controllers
     [Route("api/WeatherLog/{id}")]
     public class WeatherLog : Controller
     {
-        private ApiAuthenticationRequestData _apiAuthenticationData;
+        private RequestData _apiAuthenticationData;
 
-        public WeatherLog(ApiAuthenticationRequestData apiAuthenticationData)
+        public WeatherLog(RequestData apiAuthenticationData)
         {
             _apiAuthenticationData = apiAuthenticationData;
         }
