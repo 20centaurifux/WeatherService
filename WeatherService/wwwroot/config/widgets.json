@@ -1,0 +1,24 @@
+﻿[
+  {
+    "Guid": "c72fe6ee-4f94-4732-be36-34b2a1f8f370",
+    "Name": "Temperature",
+    "Description": "Displays the latest temperature value.",
+    "Url": "Widgets/Temperature",
+    "SupportsMultipleStations": false,
+    "RequiresTemperature": true,
+    "RequiresPressure": false,
+    "RequiresHumidity": false,
+    "RequiresUV": false
+  },
+  {
+    "Guid": "8e0ce9be-ce79-4ace-9159-a8a158694fa5",
+    "Name": "Pressure",
+    "Description": "Displays the latest pressure value.",
+    "Url": "Widgets/Pressure",
+    "SupportsMultipleStations": false,
+    "RequiresTemperature": false,
+    "RequiresPressure": true,
+    "RequiresHumidity": false,
+    "RequiresUV": false
+  }
+]
