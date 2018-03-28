@@ -11,12 +11,54 @@
     <link href="~/lib/Font-Awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/lib/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/lib/gridster/dist/jquery.gridster.min.css" rel="stylesheet" />
 
     <style type="text/css">
         div.filter
         {
-            border: solid 1px #e4e4e4;
-            padding: 5px;
+            border:solid 1px #e4e4e4;
+            padding:5px;
+        }
+
+        .gridster ul
+        {
+            list-style:none;
+        }
+
+        .gridster li
+        {
+            text-align:center;
+            position:relative;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            -webkit-box-sizing:border-box;
+            padding:5px;
+            background-color:green;
+        }
+
+        .gridster li span
+        {
+            width:100%;
+            display:block;
+        }
+
+        .gridster li span:before
+        {
+            display:block;
+            height:64px;
+            width:100%;
+            position:absolute;
+            top:15%;
+            left:0;
+            right:0;
+        }
+
+        .gridster li span:after
+        {
+            position:absolute;
+            bottom:5px;
+            left:0;
+            right:0;
         }
     </style>
 
@@ -31,6 +73,7 @@
     <script src="~/lib/datatables/media/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/media/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+    <script src="~/lib/gridster/dist/jquery.gridster.min.js"></script>
 
     <script src="~/js/jquery.ConfirmDialog.js"></script>
 
@@ -127,11 +170,11 @@
     <div id="root">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Weather Data</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="#">Home</a>
@@ -178,6 +221,9 @@
                             <a class="nav-link" href="/Login">Login</a>
                         </li>
                     }
+                </ul>
+
+                <ul class="navbar-nav" id="action-buttons">
                 </ul>
             </div>
         </nav>

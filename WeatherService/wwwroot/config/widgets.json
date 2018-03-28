@@ -10,7 +10,7 @@
     "RequiresHumidity": false,
     "RequiresUV": false,
     "width": 1,
-    "height":  1
+    "height": 1
   },
   {
     "Guid": "8e0ce9be-ce79-4ace-9159-a8a158694fa5",
@@ -24,5 +24,18 @@
     "RequiresUV": false,
     "width": 1,
     "height": 1
+  },
+  {
+    "Guid": "1e0ce9be-ce79-4ace-9159-a8a158694fa5",
+    "Name": "Dummy",
+    "Description": "A dummy widget.",
+    "Url": "Widgets/Dummy",
+    "SupportsMultipleStations": true,
+    "RequiresTemperature": false,
+    "RequiresPressure": false,
+    "RequiresHumidity": false,
+    "RequiresUV": false,
+    "width": 2,
+    "height": 2
   }
 ]
