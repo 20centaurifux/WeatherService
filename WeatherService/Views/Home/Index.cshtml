@@ -78,7 +78,6 @@
         $(document).ready(function()
         {
             var pageApp = null;
-            var bus = new Vue();
 
             var gridster = $(".gridster ul").gridster(
             {
@@ -92,13 +91,13 @@
             $('.gridster ul').css({ 'padding': '0' });
 
             $('<li class="nav-item">' +
-                '    <button type="button" class="btn btn-primary">Add widget</button>' +
-                '</li>')
+              '    <button type="button" class="btn btn-primary">Add widget</button>' +
+              '</li>')
                 .appendTo('#action-buttons')
                 .click(function()
                 {
-                    bus.$emit('dialog-displayed');
                     $('#widget-factory-dialog').modal('show');
+                    pageApp.$emit('new-widget-dialog-opened');
                 });
 
             function addNewWidget(widget, stations)
@@ -112,19 +111,7 @@
                 template: '#widgetOptions',
                 updated: function()
                 {
-                    if (this.selection.length == 0 && this.widget && this.stations.length > 0)
-                    {
-                        if (this.widget.supportsMultipleStations)
-                        {
-                            $(this.$el).find('option:first').attr('selected', true);
-                        }
-                        else
-                        {
-                            $(this.$el).find('.form-check-input:first').attr('checked', true);
-                        }
-
-                        this.selection.push(this.stations[0].id);
-                    }
+                    this.selectStations();
                 },
                 methods:
                 {
@@ -144,6 +131,24 @@
                         {
                             self.selection.push($(this).val());
                         });
+                    },
+                    selectStations()
+                    {
+                        var selected = this.selection;
+
+                        if (this.widget.supportsMultipleStations)
+                        {
+                            $(this.$el).find('option').each(function()
+                            {
+                                $(this).attr('selected', $.inArray($(this).val(), selected) != -1);
+                            });
+                        }
+                        else
+                        {
+                            var stationId = selected[0];
+
+                            $(this.$el).find('.form-check-input[data-station-id="' + stationId + '"]').attr('checked', true);
+                        }
                     }
                 }
             });
@@ -175,7 +180,7 @@
                 {
                     var self = this;
 
-                    bus.$on('dialog-displayed', function()
+                    this.$parent.$on('new-widget-dialog-opened', function()
                     {
                         self.selectDefault();
                     });
@@ -184,8 +189,15 @@
                 {
                     widgetSelected(widget)
                     {
-                        this.selectedStations.splice(0, this.selectedStations.length);
                         this.selectedWidget = widget;
+                        this.selectedStations.splice(0, this.selectedStations.length);
+
+                        var stations = this.stations[widget.guid];
+
+                        if (stations.length > 0)
+                        {
+                            this.selectedStations.push(stations[0].id);
+                        }
                     },
                     selectDefault()
                     {
@@ -204,7 +216,7 @@
                     {
                         if (this.selectedWidget)
                         {
-                            return this.stations[this.selectedWidget.guid]
+                            return this.stations[this.selectedWidget.guid];
                         }
 
                         return [];
