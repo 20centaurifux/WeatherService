@@ -6,26 +6,43 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherService.Models;
 using WeatherService.Data;
-using IniParser;
 using WeatherService.Security.ApiAuthentication;
+using IniParser;
 
 namespace WeatherService
 {
     public class Startup
     {
+        IHostingEnvironment _hostingEnv;
+
+        public Startup(IHostingEnvironment hostingEnv)
+        {
+            _hostingEnv = hostingEnv;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
+            var widgetsPath = Path.Combine(_hostingEnv.ContentRootPath, "configuration", "widgets.json");
+
             services.AddIdentity<User, UserRole>();
             services.AddTransient<IUserStore<User>, UserStore<User>>();
             services.AddTransient<IRoleStore<UserRole>, UserRoleStore<UserRole>>();
             services.AddScoped<RequestData>();
-            services.AddMvc(options => options.MaxModelValidationErrors = 1);
+            services.AddScoped<Security.Filters.Widget>();
+            services.AddSingleton<WidgetProvider>(new WidgetProvider(widgetsPath));
+
+            services.AddMvc(options =>
+            {
+                options.MaxModelValidationErrors = 1;
+                options.Filters.Add(new Security.Filters.Widget());
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Login";
                 options.LogoutPath = "/Logout";
                 options.AccessDeniedPath = "/Error/AccessDenied";
             });
+
             services.AddAuthentication();
         }
 
@@ -42,7 +59,7 @@ namespace WeatherService
                 };
             }
 
-            var configPath = Path.Combine(env.ContentRootPath, "WeatherService.ini");
+            var configPath = Path.Combine(env.ContentRootPath, "configuration", "WeatherService.ini");
             var parser = new FileIniDataParser();
             var config = parser.ReadFile(configPath);
 

@@ -9,8 +9,9 @@
     "RequiresPressure": false,
     "RequiresHumidity": false,
     "RequiresUV": false,
-    "width": 1,
-    "height": 1
+    "Width": 1,
+    "Height": 1,
+    "Background": "green"
   },
   {
     "Guid": "8e0ce9be-ce79-4ace-9159-a8a158694fa5",
@@ -22,8 +23,9 @@
     "RequiresPressure": true,
     "RequiresHumidity": false,
     "RequiresUV": false,
-    "width": 1,
-    "height": 1
+    "Width": 1,
+    "Height": 1,
+    "Background": "yellow"
   },
   {
     "Guid": "1e0ce9be-ce79-4ace-9159-a8a158694fa5",
@@ -35,7 +37,8 @@
     "RequiresPressure": false,
     "RequiresHumidity": false,
     "RequiresUV": false,
-    "width": 2,
-    "height": 2
+    "Width": 2,
+    "Height": 2,
+    "Background": "red"
   }
 ]

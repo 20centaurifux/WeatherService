@@ -80,19 +80,19 @@
             var pageApp = null;
 
             var gridster = $(".gridster ul").gridster(
-            {
-                widget_base_dimensions: ['auto', 140],
-                autogenerate_stylesheet: true,
-                min_cols: 1,
-                max_cols: 6,
-                widget_margins: [5, 5]
-            }).data('gridster');
+                {
+                    widget_base_dimensions: ['auto', 140],
+                    autogenerate_stylesheet: true,
+                    min_cols: 1,
+                    max_cols: 6,
+                    widget_margins: [5, 5]
+                }).data('gridster');
 
             $('.gridster ul').css({ 'padding': '0' });
 
             $('<li class="nav-item">' +
-              '    <button type="button" class="btn btn-primary">Add widget</button>' +
-              '</li>')
+                '    <button type="button" class="btn btn-primary">Add widget</button>' +
+                '</li>')
                 .appendTo('#action-buttons')
                 .click(function()
                 {
@@ -100,9 +100,36 @@
                     pageApp.$emit('new-widget-dialog-opened');
                 });
 
+            function refreshWidgets()
+            {
+                var now = new Date().getTime() / 1000;
+
+                $('.gridster li').each(function()
+                {
+                    var el = $(this);
+                    var lastSync = parseInt(el.attr('data-widget-last-sync'), 10);
+
+                    if (!lastSync || now - lastSync >= 180)
+                    {
+                        el.attr('data-widget-last-sync', now);
+
+                        $.get(el.attr('data-widget-url')).done(function(html)
+                        {
+                            el.html(html);
+                        });
+                    }
+                });
+            }
+
+            function widgetToHtml(widget, stations)
+            {
+                return '<li style="background-color:' + widget.background + ';" data-widget-url="' + widget.url + '?s=' + stations.join(',') + '" data-widget-last-sync="0" data-sizex="' + widget.width + '" data-sizey="' + widget.height + '"></li>';
+            }
+
             function addNewWidget(widget, stations)
             {
-                gridster.add_widget('<li><p>' + widget.name + '</p></li>');
+                gridster.add_widget(widgetToHtml(widget, stations));
+                refreshWidgets();
             }
 
             Vue.component('widgetOptions',

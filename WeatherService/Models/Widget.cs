@@ -15,5 +15,6 @@ namespace WeatherService.Models
         public bool RequiresUV { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public string Background { get; set; }
     }
 }

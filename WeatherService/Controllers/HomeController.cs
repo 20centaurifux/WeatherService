@@ -8,20 +8,18 @@ namespace WeatherService.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHostingEnvironment _env;
+        private readonly WidgetProvider _widgetProvider;
 
-        public HomeController(IHostingEnvironment env)
+        public HomeController(WidgetProvider widgetProvider)
         {
-            _env = env;
+            _widgetProvider = widgetProvider;
         }
 
         public IActionResult Index()
         {
-            var p = WidgetProvider.FromHostingEnvironment(_env);
-
             var m = new Dashboard()
             {
-                AvailableWidgets = p.LoadWidgets(),
+                AvailableWidgets = _widgetProvider.LoadWidgets(),
                 SupportedStations = new Dictionary<System.Guid, System.Collections.Generic.IEnumerable<WeatherStation>>()
             };
 
@@ -29,11 +27,11 @@ namespace WeatherService.Controllers
             {
                 if(User.Identity.IsAuthenticated)
                 {
-                    m.SupportedStations.Add(w.Guid, p.GetSupportedStations(w));
+                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedStations(w));
                 }
                 else
                 {
-                    m.SupportedStations.Add(w.Guid, p.GetSupportedPublicStations(w));
+                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedPublicStations(w));
                 }
             }
 

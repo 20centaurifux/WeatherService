@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using WeatherService.Models;
@@ -10,6 +11,7 @@ namespace WeatherService.Data
     public class WidgetProvider
     {
         private readonly string _filename;
+        private IEnumerable<Widget> _widgets;
         private IEnumerable<WeatherStation> _stations;
 
         public WidgetProvider(string filename)
@@ -17,16 +19,21 @@ namespace WeatherService.Data
             _filename = filename;
         }
 
-        public static WidgetProvider FromHostingEnvironment(IHostingEnvironment env)
-        {
-            var path = Path.Combine(env.WebRootPath, "config", "widgets.json");
-
-            return new WidgetProvider(path);
-        }
-
         public IEnumerable<Widget> LoadWidgets()
         {
-            return JsonConvert.DeserializeObject<Widget[]>(File.ReadAllText(_filename));
+            if (_widgets == null)
+            {
+                _widgets = JsonConvert.DeserializeObject<Widget[]>(File.ReadAllText(_filename));
+            }
+
+            return _widgets;
+        }
+
+        public Widget LoadWidget(Guid guid)
+        {
+            var widgets = LoadWidgets();
+
+            return widgets.FirstOrDefault(w => w.Guid.Equals(guid));
         }
 
         public IEnumerable<WeatherStation> GetSupportedStations(Widget widget)
