@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Transactions;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -31,10 +31,12 @@ namespace WeatherService.Controllers
                 return Unauthorized();
             }
 
-            using (var transaction = new TransactionScope())
+            using (var db = new WeatherDb())
             {
-                using (var db = new WeatherDb())
+                try
                 {
+                    db.BeginTransaction();
+
                     foreach(var v in values)
                     {
                         var entry = LogEntry.FromLogValue(v);
@@ -55,7 +57,12 @@ namespace WeatherService.Controllers
                         }
                     }
 
-                    transaction.Complete();
+                    db.CommitTransaction();
+                }
+                catch(Exception ex)
+                {
+                    db.RollbackTransaction();
+                    throw ex;
                 }
             }
 

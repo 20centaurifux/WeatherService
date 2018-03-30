@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
-using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 using WeatherService.Data;
 using WeatherService.Models;
@@ -36,53 +36,50 @@ namespace WeatherService.Controllers
         {
             if (TryValidateModel(m))
             {
-                using (var transaction = new TransactionScope())
+                using (var db = new WeatherDb())
                 {
-                    using (var db = new WeatherDb())
+                    if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
                     {
-                        if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
+                        ViewData["ValidationError"] = "The email address is already assigned.";
+                    }
+                    else
+                    {
+                        var user = db.User.First(u => u.Id.Equals(m.Id));
+                        var result = IdentityResult.Success;
+
+                        if (!string.IsNullOrEmpty(m.Password))
                         {
-                            ViewData["ValidationError"] = "The email address is already assigned.";
+                            if (m.Password.Equals(m.Password2))
+                            {
+                                result = _userManager.RemovePasswordAsync(user).Result;
+
+                                if (result.Succeeded)
+                                {
+                                    result = _userManager.AddPasswordAsync(user, m.Password).Result;
+                                }
+                            }
+                            else
+                            {
+                                result = IdentityResult.Failed(new IdentityError[] { new IdentityError() { Description = "Entered passwords must be equal." } });
+                            }
                         }
-                        else
+
+                        if (result.Succeeded)
                         {
-                            var user = db.User.First(u => u.Id.Equals(m.Id));
-                            var result = IdentityResult.Success;
+                            user.Email = m.Email;
 
-                            if (!string.IsNullOrEmpty(m.Password))
+                            result = _userManager.UpdateAsync(user).Result;
+                        }
+
+                        if (!result.Succeeded)
+                        {
+                            if (result.Errors.Count() > 0)
                             {
-                                if (m.Password.Equals(m.Password2))
-                                {
-                                    result = _userManager.RemovePasswordAsync(user).Result;
-
-                                    if (result.Succeeded)
-                                    {
-                                        result = _userManager.AddPasswordAsync(user, m.Password).Result;
-                                    }
-                                }
-                                else
-                                {
-                                    result = IdentityResult.Failed(new IdentityError[] { new IdentityError() { Description = "Entered passwords must be equal." } });
-                                }
+                                ViewData["ValidationError"] = result.Errors.First().Description;
                             }
-
-                            if (result.Succeeded)
+                            else
                             {
-                                user.Email = m.Email;
-
-                                result = _userManager.UpdateAsync(user).Result;
-                            }
-
-                            if (!result.Succeeded)
-                            {
-                                if (result.Errors.Count() > 0)
-                                {
-                                    ViewData["ValidationError"] = result.Errors.First().Description;
-                                }
-                                else
-                                {
-                                    ViewData["ValidationError"] = "Update failed, please check entered data and try again.";
-                                }
+                                ViewData["ValidationError"] = "Update failed, please check entered data and try again.";
                             }
                         }
                     }

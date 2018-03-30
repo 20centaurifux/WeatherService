@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using WeatherService.Data;
 using WeatherService.Models;
 using LinqToDB;
-using System.Transactions;
 
 namespace WeatherService.Controllers
 {
@@ -46,9 +46,11 @@ namespace WeatherService.Controllers
         {
             if (TryValidateModel(m))
             {
-                using (var transaction = new TransactionScope())
+                using (var db = new WeatherDb())
                 {
-                    using (var db = new WeatherDb())
+                    db.BeginTransaction();
+
+                    try
                     {
                         if (db.WeatherStation.Any(s => s.Name.ToLower().Equals(m.Name.ToLower()) && !s.Id.Equals(m.Id)))
                         {
@@ -60,9 +62,14 @@ namespace WeatherService.Controllers
 
                             return Redirect("/WeatherStations");
                         }
-                    }
 
-                    transaction.Complete();
+                        db.CommitTransaction();
+                    }
+                    catch(Exception ex)
+                    {
+                        db.RollbackTransaction();
+                        throw ex;
+                    }
                 }
             }
             else
@@ -86,9 +93,11 @@ namespace WeatherService.Controllers
         {
             if (TryValidateModel(m))
             {
-                using (var transaction = new TransactionScope())
+                using (var db = new WeatherDb())
                 {
-                    using (var db = new WeatherDb())
+                    db.BeginTransaction();
+
+                    try
                     {
                         if(db.WeatherStation.Any(s => s.Name.ToLower().Equals(m.Name.ToLower())))
                         {
@@ -100,9 +109,14 @@ namespace WeatherService.Controllers
 
                             return Redirect("/WeatherStations");
                         }
-                    }
 
-                    transaction.Complete();
+                        db.CommitTransaction();
+                    }
+                    catch(Exception ex)
+                    {
+                        db.RollbackTransaction();
+                        throw ex;
+                    }
                 }
             }
             else

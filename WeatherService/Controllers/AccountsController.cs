@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Linq;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.View;
 using LinqToDB;
-using System.Transactions;
-using System.Collections.Generic;
 
 namespace WeatherService.Controllers
 {
@@ -77,79 +77,74 @@ namespace WeatherService.Controllers
         {
             if (TryValidateModel(m))
             {
-                using (var transaction = new TransactionScope())
+                using (var db = new WeatherDb())
                 {
-                    using (var db = new WeatherDb())
+                    if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower()) && !u.Id.Equals(m.Id)))
                     {
-                        if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower()) && !u.Id.Equals(m.Id)))
+                        ViewData["ValidationError"] = "A user with the given name does already exist.";
+                    }
+                    else if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
+                    {
+                        ViewData["ValidationError"] = "The email address is already assigned.";
+                    }
+                    else
+                    {
+                        var user = db.User.First(u => u.Id.Equals(m.Id));
+                        var result = IdentityResult.Success;
+
+                        if (!string.IsNullOrEmpty(m.Password))
                         {
-                            ViewData["ValidationError"] = "A user with the given name does already exist.";
+                            result = _userManager.RemovePasswordAsync(user).Result;
+
+                            if (result.Succeeded)
+                            {
+                                result = _userManager.AddPasswordAsync(user, m.Password).Result;
+                            }
                         }
-                        else if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
+
+                        if (result.Succeeded)
                         {
-                            ViewData["ValidationError"] = "The email address is already assigned.";
+                            user.UserName = m.Username;
+                            user.Email = m.Email;
+
+                            result = _userManager.UpdateAsync(user).Result;
+
+                            if (result.Succeeded)
+                            {
+                                if (m.IsAdmin && !_userManager.IsInRoleAsync(user, "Administrator").Result)
+                                {
+                                    result = _userManager.RemoveFromRoleAsync(user, "Reader").Result;
+
+                                    if (result.Succeeded)
+                                    {
+                                        result = _userManager.AddToRoleAsync(user, "Administrator").Result;
+                                    }
+                                }
+                                else if (!m.IsAdmin && _userManager.IsInRoleAsync(user, "Administrator").Result)
+                                {
+                                    result = _userManager.RemoveFromRoleAsync(user, "Administrator").Result;
+
+                                    if (result.Succeeded)
+                                    {
+                                        result = _userManager.AddToRoleAsync(user, "Reader").Result;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (result.Succeeded)
+                        {
+                            return Redirect("/Accounts");
+                        }
+                        else if (result.Errors.Count() > 0)
+                        {
+                            ViewData["ValidationError"] = result.Errors.First().Description;
                         }
                         else
                         {
-                            var user = db.User.First(u => u.Id.Equals(m.Id));
-                            var result = IdentityResult.Success;
-
-                            if(!string.IsNullOrEmpty(m.Password))
-                            {
-                                result = _userManager.RemovePasswordAsync(user).Result;
-
-                                if(result.Succeeded)
-                                {
-                                    result = _userManager.AddPasswordAsync(user, m.Password).Result;
-                                }
-                            }
-
-                            if (result.Succeeded)
-                            {
-                                user.UserName = m.Username;
-                                user.Email = m.Email;
-
-                                result = _userManager.UpdateAsync(user).Result;
-
-                                if (result.Succeeded)
-                                {
-                                    if (m.IsAdmin && !_userManager.IsInRoleAsync(user, "Administrator").Result)
-                                    {
-                                        result = _userManager.RemoveFromRoleAsync(user, "Reader").Result;
-
-                                        if (result.Succeeded)
-                                        {
-                                            result = _userManager.AddToRoleAsync(user, "Administrator").Result;
-                                        }
-                                    }
-                                    else if (!m.IsAdmin && _userManager.IsInRoleAsync(user, "Administrator").Result)
-                                    {
-                                        result = _userManager.RemoveFromRoleAsync(user, "Administrator").Result;
-
-                                        if (result.Succeeded)
-                                        {
-                                            result = _userManager.AddToRoleAsync(user, "Reader").Result;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (result.Succeeded)
-                            {
-                                return Redirect("/Accounts");
-                            }
-                            else if (result.Errors.Count() > 0)
-                            {
-                                ViewData["ValidationError"] = result.Errors.First().Description;
-                            }
-                            else
-                            {
-                                ViewData["ValidationError"] = "Update failed, please check entered data and try again.";
-                            }
+                            ViewData["ValidationError"] = "Update failed, please check entered data and try again.";
                         }
                     }
-
-                    transaction.Complete();
                 }
             }
             else
@@ -173,62 +168,57 @@ namespace WeatherService.Controllers
         {
             if (TryValidateModel(m))
             {
-                using (var transaction = new TransactionScope())
+                using (var db = new WeatherDb())
                 {
-                    using (var db = new WeatherDb())
+                    if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower())))
                     {
-                        if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower())))
+                        ViewData["ValidationError"] = "A user with the given name does already exist.";
+                    }
+                    else if (!string.IsNullOrEmpty(m.Email) && (db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()))))
+                    {
+                        ViewData["ValidationError"] = "The email address is already assigned.";
+                    }
+                    else
+                    {
+                        var user = new User
                         {
-                            ViewData["ValidationError"] = "A user with the given name does already exist.";
+                            Id = m.Id,
+                            UserName = m.Username,
+                            Email = m.Email
+                        };
+
+                        if (m.Password == null)
+                        {
+                            m.Password = string.Empty;
                         }
-                        else if (!string.IsNullOrEmpty(m.Email) && (db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()))))
+
+                        var result = _userManager.CreateAsync(user, m.Password).Result;
+
+                        if(result.Succeeded)
                         {
-                            ViewData["ValidationError"] = "The email address is already assigned.";
-                        }
-                        else
-                        {
-                            var user = new User
+                            if(m.IsAdmin)
                             {
-                                Id = m.Id,
-                                UserName = m.Username,
-                                Email = m.Email
-                            };
-
-                            if (m.Password == null)
-                            {
-                                m.Password = string.Empty;
-                            }
-
-                            var result = _userManager.CreateAsync(user, m.Password).Result;
-
-                            if(result.Succeeded)
-                            {
-                                if(m.IsAdmin)
-                                {
-                                    result = _userManager.AddToRoleAsync(user, "Administrator").Result;
-                                }
-                                else
-                                {
-                                    result = _userManager.AddToRoleAsync(user, "Reader").Result;
-                                }
-                            }
-
-                            if(result.Succeeded)
-                            {
-                                return Redirect("/Accounts");
-                            }
-                            else if (result.Errors.Count() > 0)
-                            {
-                                ViewData["ValidationError"] = result.Errors.First().Description;
+                                result = _userManager.AddToRoleAsync(user, "Administrator").Result;
                             }
                             else
                             {
-                                ViewData["ValidationError"] = "Updated failed, please check entered data and try again.";
+                                result = _userManager.AddToRoleAsync(user, "Reader").Result;
                             }
                         }
-                    }
 
-                    transaction.Complete();
+                        if(result.Succeeded)
+                        {
+                            return Redirect("/Accounts");
+                        }
+                        else if (result.Errors.Count() > 0)
+                        {
+                            ViewData["ValidationError"] = result.Errors.First().Description;
+                        }
+                        else
+                        {
+                            ViewData["ValidationError"] = "Updated failed, please check entered data and try again.";
+                        }
+                    }
                 }
             }
             else
