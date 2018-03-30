@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Transactions;
+using System.Data;
 using System.Linq;
 using LinqToDB;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.View;
-using System.Threading.Tasks;
 
 namespace WeatherService.Controllers
 {
@@ -81,9 +80,11 @@ namespace WeatherService.Controllers
         {
             var user = _userManager.GetUserAsync(User).Result;
 
-            using (var transaction = new TransactionScope())
+            using (var db = new WeatherDb())
             {
-                using (var db = new WeatherDb())
+                db.BeginTransaction(IsolationLevel.Serializable);
+
+                try
                 {
                     db.DashboardItem
                         .Where(item => item.UserId.Equals(user.Id))
@@ -98,9 +99,14 @@ namespace WeatherService.Controllers
                             db.Insert(new DashboardFilter() { DashboardItemId = pk, StationId = stationId });
                         }
                     }
-                }
 
-                transaction.Complete();
+                    db.CommitTransaction();
+                }
+                catch(Exception ex)
+                {
+                    db.RollbackTransaction();
+                    throw ex;
+                }
             }
 
             return Ok();
