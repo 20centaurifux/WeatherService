@@ -46,6 +46,53 @@ namespace WeatherService.Data
             return GetSupportedStations(widget, true);
         }
 
+        public static bool WidgetCompatibleToStation(Widget widget, WeatherStation station)
+        {
+            if (widget.RequiresTemperature && !station.HasTemperature)
+            {
+                return false;
+            }
+
+            if (widget.RequiresPressure && !station.HasPressure)
+            {
+                return false;
+            }
+
+            if (widget.RequiresHumidity && !station.HasHumidity)
+            {
+                return false;
+            }
+
+            if (widget.RequiresUV && !station.HasUV)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidateStationIds(Widget widget, IEnumerable<string> stationIds)
+        {
+            var supportedStations = GetSupportedStations(widget);
+
+            foreach(var idToCheck in stationIds)
+            {
+                var station = supportedStations.FirstOrDefault(s => s.Id.Equals(idToCheck));
+
+                if(station == null)
+                {
+                    return false;
+                }
+
+                if(!WidgetCompatibleToStation(widget, station))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private IEnumerable<WeatherStation> GetSupportedStations(Widget widget, bool publicOnly)
         {
             var stations = new List<WeatherStation>();

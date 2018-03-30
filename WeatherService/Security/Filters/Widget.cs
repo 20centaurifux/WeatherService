@@ -55,7 +55,7 @@ namespace WeatherService.Security.Filters
                     return;
                 }
 
-                if(!StationsFullfillsRequirements(widget, station))
+                if(!WidgetProvider.WidgetCompatibleToStation(widget, station))
                 {
                     BadRequest();
                     return;
@@ -82,31 +82,6 @@ namespace WeatherService.Security.Filters
             }
 
             return supportedStations;
-        }
-
-        private bool StationsFullfillsRequirements(Models.Widget widget, WeatherStation station)
-        {
-            if (widget.RequiresTemperature && !station.HasTemperature)
-            {
-                return false;
-            }
-
-            if (widget.RequiresPressure && !station.HasPressure)
-            {
-                return false;
-            }
-
-            if (widget.RequiresHumidity && !station.HasHumidity)
-            {
-                return false;
-            }
-
-            if (widget.RequiresUV && !station.HasUV)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void BadRequest()

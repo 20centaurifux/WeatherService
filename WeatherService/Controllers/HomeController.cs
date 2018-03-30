@@ -32,15 +32,15 @@ namespace WeatherService.Controllers
                 SupportedStations = new Dictionary<System.Guid, IEnumerable<PublicStationData>>()
             };
 
-            foreach(var w in m.AvailableWidgets)
+            foreach(var widget in m.AvailableWidgets)
             {
                 if(User.Identity.IsAuthenticated)
                 {
-                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedStations(w).Select(s => s.ToPublicStationData()));
+                    m.SupportedStations.Add(widget.Guid, _widgetProvider.GetSupportedStations(widget).Select(s => s.ToPublicStationData()));
                 }
                 else
                 {
-                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedPublicStations(w).Select(s => s.ToPublicStationData()));
+                    m.SupportedStations.Add(widget.Guid, _widgetProvider.GetSupportedPublicStations(widget).Select(s => s.ToPublicStationData()));
                 }
             }
 
@@ -50,8 +50,8 @@ namespace WeatherService.Controllers
 
                 using (var db = new WeatherDb())
                 {
-                    var dashboardItems = db.DashboardItem.Where(i => i.UserId.Equals(user.Id)).ToArray();
-                    var items = new List<SelectedDashboardItem>();
+                    var dashboardItems = db.DashboardItem.Where(item => item.UserId.Equals(user.Id)).ToArray();
+                    var selectedItems = new List<SelectedDashboardItem>();
 
                     foreach(var dashboardItem in dashboardItems)
                     {
@@ -59,11 +59,14 @@ namespace WeatherService.Controllers
 
                         if (widget != null)
                         {
-                            items.Add(SelectedDashboardItem.Build(dashboardItem, widget));
+                            if (_widgetProvider.ValidateStationIds(widget, dashboardItem.Filters.Select(f => f.StationId)))
+                            {
+                                selectedItems.Add(SelectedDashboardItem.Build(dashboardItem, widget));
+                            }
                         }
                     }
 
-                    m.Items = items;
+                    m.Items = selectedItems;
                 }
             }
             else
@@ -92,11 +95,19 @@ namespace WeatherService.Controllers
 
                     foreach (var item in items)
                     {
-                        var pk = db.InsertWithInt32Identity(new DashboardItem() { UserId = user.Id, WidgetId = item.WidgetId, X = item.X, Y = item.Y });
+                        var widget = _widgetProvider.LoadWidget(new Guid(item.WidgetId));
 
-                        foreach (var stationId in item.Filter)
+                        if(widget != null)
                         {
-                            db.Insert(new DashboardFilter() { DashboardItemId = pk, StationId = stationId });
+                            if (_widgetProvider.ValidateStationIds(widget, item.Filter))
+                            {
+                                var pk = db.InsertWithInt32Identity(new DashboardItem() { UserId = user.Id, WidgetId = item.WidgetId, X = item.X, Y = item.Y });
+
+                                foreach (var stationId in item.Filter)
+                                {
+                                    db.Insert(new DashboardFilter() { DashboardItemId = pk, StationId = stationId });
+                                }
+                            }
                         }
                     }
 
