@@ -28,7 +28,7 @@ namespace WeatherService
             services.AddTransient<IRoleStore<UserRole>, UserRoleStore<UserRole>>();
             services.AddScoped<RequestData>();
             services.AddScoped<Security.Filters.Widget>();
-            services.AddSingleton<WidgetProvider>(new WidgetProvider(widgetsPath));
+            services.AddScoped<WidgetProvider>(s => new WidgetProvider(widgetsPath));
 
             services.AddMvc(options =>
             {
