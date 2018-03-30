@@ -14,5 +14,7 @@ namespace WeatherService.Data
         public ITable<UserRole> UserRole => GetTable<UserRole>();
         public ITable<WeatherStation> WeatherStation => GetTable<WeatherStation>();
         public ITable<LogEntry> LogEntry => GetTable<LogEntry>();
+        public ITable<DashboardItem> DashboardItem => GetTable<DashboardItem>().LoadWith(i => i.Filters);
+        public ITable<DashboardFilter> DashbordFilter => GetTable<DashboardFilter>();
     }
 }

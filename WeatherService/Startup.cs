@@ -59,6 +59,8 @@ namespace WeatherService
                 };
             }
 
+            LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
+
             var configPath = Path.Combine(env.ContentRootPath, "configuration", "WeatherService.ini");
             var parser = new FileIniDataParser();
             var config = parser.ReadFile(configPath);

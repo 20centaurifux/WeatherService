@@ -1,4 +1,4 @@
-﻿@model WeatherService.Models.Dashboard
+﻿@model WeatherService.Models.View.Dashboard
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -79,27 +79,6 @@
         {
             var pageApp = null;
 
-            var gridster = $(".gridster ul").gridster(
-                {
-                    widget_base_dimensions: ['auto', 140],
-                    autogenerate_stylesheet: true,
-                    min_cols: 1,
-                    max_cols: 6,
-                    widget_margins: [5, 5]
-                }).data('gridster');
-
-            $('.gridster ul').css({ 'padding': '0' });
-
-            $('<li class="nav-item">' +
-                '    <button type="button" class="btn btn-primary">Add widget</button>' +
-                '</li>')
-                .appendTo('#action-buttons')
-                .click(function()
-                {
-                    $('#widget-factory-dialog').modal('show');
-                    pageApp.$emit('new-widget-dialog-opened');
-                });
-
             function refreshWidgets()
             {
                 var now = new Date().getTime() / 1000;
@@ -113,7 +92,7 @@
                     {
                         el.attr('data-widget-last-sync', now);
 
-                        $.get(el.attr('data-widget-url')).done(function(html)
+                        $.get(el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations')).done(function(html)
                         {
                             el.html(html);
                         });
@@ -123,14 +102,69 @@
 
             function widgetToHtml(widget, stations)
             {
-                return '<li style="background-color:' + widget.background + ';" data-widget-url="' + widget.url + '?s=' + stations.join(',') + '" data-widget-last-sync="0" data-sizex="' + widget.width + '" data-sizey="' + widget.height + '"></li>';
+                return '<li style="background-color:' + widget.background + ';" data-widget-stations="' + stations.join(',') + '" data-widget-guid="' + widget.guid + '" data-widget-url="' + widget.url + '" data-widget-last-sync="0"></li>';
             }
 
-            function addNewWidget(widget, stations)
+            function storeWidgets()
             {
-                gridster.add_widget(widgetToHtml(widget, stations));
-                refreshWidgets();
+                @if(User.Identity.IsAuthenticated)
+                {
+                <text>
+                var items = [];
+
+                $('.gridster li').each(function()
+                {
+                    var el = $(this);
+
+                    items.push({ widgetId: el.attr('data-widget-guid'), x: el.attr('data-col'), y: el.attr('data-row'), filter: el.attr('data-widget-stations').split(',') });
+                });
+
+                $.ajax(
+                {
+                    url: '/Home/UpdateDashboard',
+                    type: 'POST',
+                    data: JSON.stringify(items),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                }).fail(function(xhr, textStatus, errorThrown) { console.warn(xhr.responseText); });
+                </text>
+                }
             }
+
+            function addNewWidget(widget, stations, position)
+            {
+                gridster.add_widget(widgetToHtml(widget, stations), widget.height, widget.width);
+                refreshWidgets();
+                storeWidgets();
+            }
+
+            var gridster = $(".gridster ul").gridster(
+            {
+                widget_base_dimensions: ['auto', 140],
+                autogenerate_stylesheet: true,
+                min_cols: 1,
+                max_cols: 6,
+                widget_margins: [5, 5],
+                draggable:
+                {
+                    stop: function(e, ui)
+                    {
+                        setTimeout(storeWidgets, 0);
+                    }
+                }
+            }).data('gridster');
+
+            $('.gridster ul').css({ 'padding': '0' });
+
+            $('<li class="nav-item">' +
+                '    <button type="button" class="btn btn-primary">Add widget</button>' +
+                '</li>')
+                .appendTo('#action-buttons')
+                .click(function()
+                {
+                    $('#widget-factory-dialog').modal('show');
+                    pageApp.$emit('new-widget-dialog-opened');
+                });
 
             Vue.component('widgetOptions',
             {
@@ -264,6 +298,8 @@
                     supportedStations: @Json.Serialize(Model.SupportedStations)
                 }
             });
+
+            refreshWidgets();
         });
     </script>
 
@@ -274,6 +310,12 @@
     </div>
 
     <div class="gridster">
-        <ul></ul>
+        <ul>
+            @foreach(var item in Model.Items)
+            {
+                <li style="background-color:@item.Widget.Background;" data-widget-stations="@String.Join(",", item.Stations)" data-widget-guid="@item.Widget.Guid" data-widget-url="@item.Widget.Url" data-widget-last-sync="0" data-sizex="@item.Widget.Width" data-sizey="@item.Widget.Height" data-col="@item.X" data-row="@item.Y">
+                </li>
+            }
+        </ul>
     </div>
 }
