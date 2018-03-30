@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http;
-using WeatherService.Models;
+using WeatherService.Models.View;
 
 namespace WeatherService.Controllers
 {
