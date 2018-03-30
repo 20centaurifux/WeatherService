@@ -1,4 +1,4 @@
-﻿namespace WeatherService.Models
+﻿namespace WeatherService.Models.View
 {
     public class PublicStationData
     {

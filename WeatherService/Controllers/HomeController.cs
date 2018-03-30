@@ -29,18 +29,18 @@ namespace WeatherService.Controllers
             var m = new Dashboard()
             {
                 AvailableWidgets = _widgetProvider.LoadWidgets(),
-                SupportedStations = new Dictionary<System.Guid, IEnumerable<WeatherStation>>()
+                SupportedStations = new Dictionary<System.Guid, IEnumerable<PublicStationData>>()
             };
 
             foreach(var w in m.AvailableWidgets)
             {
                 if(User.Identity.IsAuthenticated)
                 {
-                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedStations(w));
+                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedStations(w).Select(s => s.ToPublicStationData()));
                 }
                 else
                 {
-                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedPublicStations(w));
+                    m.SupportedStations.Add(w.Guid, _widgetProvider.GetSupportedPublicStations(w).Select(s => s.ToPublicStationData()));
                 }
             }
 

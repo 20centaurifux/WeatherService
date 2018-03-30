@@ -1,6 +1,7 @@
 ﻿using System;
-using LinqToDB.Mapping;
 using System.ComponentModel.DataAnnotations;
+using LinqToDB.Mapping;
+using WeatherService.Models.View;
 
 namespace WeatherService.Models
 {
