@@ -59,11 +59,10 @@ namespace WeatherService.Controllers
                         else
                         {
                             db.Update(m);
+                            db.CommitTransaction();
 
                             return Redirect("/WeatherStations");
                         }
-
-                        db.CommitTransaction();
                     }
                     catch(Exception ex)
                     {
@@ -106,11 +105,10 @@ namespace WeatherService.Controllers
                         else
                         {
                             db.Insert(m);
+                            db.CommitTransaction();
 
                             return Redirect("/WeatherStations");
                         }
-
-                        db.CommitTransaction();
                     }
                     catch(Exception ex)
                     {
