@@ -1,1 +1,52 @@
-﻿<p>Temperature</p>
+﻿@model WeatherService.Models.Widgets.Temperature
+
+@{
+    var guid = Guid.NewGuid().ToString();
+}
+
+@if(Model.Value != null)
+{
+<text>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['gauge'] });
+
+    google.charts.setOnLoadCallback(function()
+    {
+        var data = google.visualization.arrayToDataTable(
+        [
+            ['Label', 'Value'],
+            ['°C', @Json.Serialize(Model.Value)]
+        ]);
+
+    var options =
+    {
+            width: 90, height: 90,
+            redFrom: 30, redTo: 50,
+            yellowFrom: 25, yellowTo: 30,
+            greenFrom: 16, greenTo: 25,
+            minorTicks: 5,
+            max: 50,
+            min: -15
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('@guid'));
+        chart.draw(data, options);
+    });
+</script>
+</text>
+}
+
+<p style="font-size:x-small; font-weight:bold; margin:2px; color:white;">
+    @Model.StationName
+</p>
+
+@if (Model.Value == null)
+{
+    <p style="padding-top:20px; font-size:16px; font-weight:bold; color:white;">N/A</p>
+}
+else
+{
+<div style="width:120px; padding-left:11px;">
+    <div id="@guid"></div>
+</div>
+}

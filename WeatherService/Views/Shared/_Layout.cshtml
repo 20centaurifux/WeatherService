@@ -14,56 +14,50 @@
     <link href="~/lib/gridster/dist/jquery.gridster.min.css" rel="stylesheet" />
 
     <style type="text/css">
-        div.filter
-        {
-            border:solid 1px #e4e4e4;
-            padding:5px;
+        div.filter {
+            border: solid 1px #e4e4e4;
+            padding: 5px;
         }
 
-        .gridster ul
-        {
-            list-style:none;
+        .gridster ul {
+            list-style: none;
         }
 
-        .gridster li
-        {
-            text-align:center;
-            position:relative;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
-            -webkit-box-sizing:border-box;
-            padding:5px;
-            background-color:green;
+        .gridster li {
+            text-align: center;
+            position: relative;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            padding: 5px;
+            background-color: green;
         }
 
-        .gridster li span
-        {
-            width:100%;
-            display:block;
-        }
+            .gridster li span {
+                width: 100%;
+                display: block;
+            }
 
-        .gridster li span:before
-        {
-            display:block;
-            height:64px;
-            width:100%;
-            position:absolute;
-            top:15%;
-            left:0;
-            right:0;
-        }
+                .gridster li span:before {
+                    display: block;
+                    height: 64px;
+                    width: 100%;
+                    position: absolute;
+                    top: 15%;
+                    left: 0;
+                    right: 0;
+                }
 
-        .gridster li span:after
-        {
-            position:absolute;
-            bottom:5px;
-            left:0;
-            right:0;
-        }
+                .gridster li span:after {
+                    position: absolute;
+                    bottom: 5px;
+                    left: 0;
+                    right: 0;
+                }
     </style>
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
     <script src="~/lib/jquery.generateId/dist/generate-id.min.js"></script>
     <script src="~/lib/jquery.validation/dist/jquery.validate.min.js"></script>
@@ -157,7 +151,7 @@
                         })
                         .fail(function()
                         {
-                            alert("Couldn't receive station list, please try again later.");
+                            console.warn("Couldn't receive station list.");
                         });
                     }
                 }

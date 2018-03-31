@@ -4,6 +4,22 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Home";
 
+    <style>
+        .bg
+        {
+            position:fixed;
+            top:0;
+            right:0;
+            bottom:0;
+            left:0;
+            background-size:cover;
+            background-position:50% 50%;
+            background-image:url('assets/bg-home.jpg');
+            background-repeat:repeat;
+            z-index:-1;
+        }
+    </style>
+
     <template id="widgetFactory" inline-template>
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -140,11 +156,8 @@
 
             var gridster = $(".gridster ul").gridster(
             {
-                widget_base_dimensions: ['auto', 140],
-                autogenerate_stylesheet: true,
-                min_cols: 1,
-                max_cols: 6,
-                widget_margins: [5, 5],
+                widget_base_dimensions: [120, 120],
+                widget_margins: [10, 10],
                 draggable:
                 {
                     stop: function(e, ui)
@@ -311,11 +324,13 @@
 
     <div class="gridster">
         <ul>
-            @foreach(var item in Model.Items)
+            @foreach (var item in Model.Items)
             {
                 <li style="background-color:@item.Widget.Background;" data-widget-stations="@String.Join(",", item.Stations)" data-widget-guid="@item.Widget.Guid" data-widget-url="@item.Widget.Url" data-widget-last-sync="0" data-sizex="@item.Widget.Width" data-sizey="@item.Widget.Height" data-col="@item.X" data-row="@item.Y">
                 </li>
             }
         </ul>
     </div>
+
+    <div id="bg" class="bg" />
 }
