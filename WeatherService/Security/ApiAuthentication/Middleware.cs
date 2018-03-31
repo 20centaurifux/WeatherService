@@ -49,7 +49,7 @@ namespace WeatherService.Security.ApiAuthentication
                     await _next(context);
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Bad Request");
@@ -91,13 +91,24 @@ namespace WeatherService.Security.ApiAuthentication
                     var timestampBytes = Encoding.ASCII.GetBytes(data.Timestamp.ToString());
 
                     var hashBytes = hmac.ComputeHash(timestampBytes);
-                    var hashString = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+                    var hashString = ToHexString(hashBytes);
 
                     success = hashString.Equals(data.HMAC);
                 }
             }
 
             return success;
+        }
+
+        private static string ToHexString(byte[] array)
+        {
+            StringBuilder hex = new StringBuilder(array.Length * 2);
+
+            foreach (var b in array)
+            {
+                hex.AppendFormat("{0:x2}", b);
+            }
+            return hex.ToString();
         }
     }
 }
