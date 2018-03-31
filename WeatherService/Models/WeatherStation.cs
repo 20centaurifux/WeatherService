@@ -31,6 +31,10 @@ namespace WeatherService.Models
         [StringLength(64)]
         public string Location { get; set; }
 
+        [Column(Name = "WebcamUrl")]
+        [StringLength(256)]
+        public string WebcamUrl { get; set; }
+
         [Column(Name = "Latitude")]
         public double Latitude { get; set; }
 
@@ -59,6 +63,7 @@ namespace WeatherService.Models
                 Id = this.Id,
                 Name = this.Name,
                 Location = this.Location,
+                WebcamUrl = this.WebcamUrl,
                 IsPublic = this.IsPublic,
                 HasTemperature = this.HasTemperature,
                 HasHumidity = this.HasHumidity,

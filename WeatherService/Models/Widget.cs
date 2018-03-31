@@ -13,6 +13,7 @@ namespace WeatherService.Models
         public bool RequiresPressure { get; set; }
         public bool RequiresHumidity { get; set; }
         public bool RequiresUV { get; set; }
+        public bool RequiresWebcamUrl { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public string Background { get; set; }

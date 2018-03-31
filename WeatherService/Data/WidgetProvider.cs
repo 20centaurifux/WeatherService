@@ -68,6 +68,11 @@ namespace WeatherService.Data
                 return false;
             }
 
+            if (widget.RequiresWebcamUrl && string.IsNullOrEmpty(station.WebcamUrl))
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -99,27 +104,10 @@ namespace WeatherService.Data
 
             foreach (var s in WeatherStations.Where(s => !publicOnly || s.IsPublic))
             {
-                if(widget.RequiresTemperature && !s.HasTemperature)
+                if (WidgetCompatibleToStation(widget, s))
                 {
-                    continue;
+                    stations.Add(s);
                 }
-
-                if (widget.RequiresPressure && !s.HasPressure)
-                {
-                    continue;
-                }
-
-                if (widget.RequiresHumidity && !s.HasHumidity)
-                {
-                    continue;
-                }
-
-                if (widget.RequiresUV && !s.HasUV)
-                {
-                    continue;
-                }
-
-                stations.Add(s);
             }
 
             return stations;

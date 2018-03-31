@@ -14,8 +14,12 @@ namespace WeatherService.Controllers
         public IActionResult Temperature()
         {
             var station = GetStations().First();
-            DateTime? lastUpdate = null;
-            Double? value = null;
+
+            var m = new SingleStationValue<Double>()
+            {
+                StationName = station.Name,
+                StationLocation = station.Location
+            };
 
             using (var db = new WeatherDb())
             {
@@ -23,14 +27,29 @@ namespace WeatherService.Controllers
 
                 if(entry != null && DateTime.UtcNow.Subtract(entry.Timestamp).TotalHours < 4)
                 {
-                    lastUpdate = entry.Timestamp;
-                    value = entry.Temperature;
+                    m.LastUpdate = entry.Timestamp;
+                    m.Value = entry.Temperature;
                 }
             }
 
-            return View(new Temperature() { StationName = station.Name, StationLocation = station.Location, LastUpdate = lastUpdate, Value = value });
+            return View(m);
         }
 
+        [Security.Filters.Widget(Guid = "8e0ce9be-ce79-4ace-9159-a8a158694fa5")]
+        public IActionResult WebcamImage()
+        {
+            var station = GetStations().First();
+
+            var m = new SingleStationValue<String>()
+            {
+                StationName = station.Name,
+                StationLocation = station.Location,
+                Value = station.WebcamUrl
+            };
+
+            return View(m);
+        }
+            
         private IEnumerable<WeatherStation> GetStations()
         {
             using (var db = new WeatherDb())

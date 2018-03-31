@@ -8,37 +8,25 @@
     "RequiresTemperature": true,
     "RequiresPressure": false,
     "RequiresHumidity": false,
+    "RequiresWebcamUrl": false,
     "RequiresUV": false,
     "Width": 1,
     "Height": 1,
-    "Background": "green"
+    "Background": "#2d89ef"
   },
   {
     "Guid": "8e0ce9be-ce79-4ace-9159-a8a158694fa5",
-    "Name": "Pressure",
-    "Description": "Displays the latest pressure value.",
-    "Url": "Widgets/Pressure",
+    "Name": "Webcam",
+    "Description": "Displays the latest webcam image.",
+    "Url": "Widgets/WebcamImage",
     "SupportsMultipleStations": false,
-    "RequiresTemperature": false,
-    "RequiresPressure": true,
-    "RequiresHumidity": false,
-    "RequiresUV": false,
-    "Width": 1,
-    "Height": 1,
-    "Background": "yellow"
-  },
-  {
-    "Guid": "1e0ce9be-ce79-4ace-9159-a8a158694fa5",
-    "Name": "Dummy",
-    "Description": "A dummy widget.",
-    "Url": "Widgets/Dummy",
-    "SupportsMultipleStations": true,
     "RequiresTemperature": false,
     "RequiresPressure": false,
     "RequiresHumidity": false,
     "RequiresUV": false,
+    "RequiresWebcamUrl": true,
     "Width": 2,
     "Height": 2,
-    "Background": "red"
+    "Background": "white"
   }
 ]
