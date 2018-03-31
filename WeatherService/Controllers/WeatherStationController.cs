@@ -70,7 +70,7 @@ namespace WeatherService.Controllers
                 {
                     logValues.Add(new object[]
                     {
-                        e.Timestamp,
+                        e.Timestamp.ToLocalTime(),
                         Math.Round(e.Temperature, 2),
                         e.Pressure,
                         e.Humidity,
