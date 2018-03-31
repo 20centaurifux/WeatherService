@@ -154,6 +154,8 @@
                 storeWidgets();
             }
 
+            setInterval(refreshWidgets, 1000 * 60 * 3);
+
             var gridster = $(".gridster ul").gridster(
             {
                 widget_base_dimensions: [120, 120],

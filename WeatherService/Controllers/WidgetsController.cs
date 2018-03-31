@@ -21,7 +21,7 @@ namespace WeatherService.Controllers
             {
                 var entry = db.LogEntry.Where(l => l.StationId.Equals(station.Id)).OrderByDescending(l => l.Timestamp).FirstOrDefault();
 
-                if(entry != null && DateTime.UtcNow.Subtract(entry.Timestamp).TotalHours < 3)
+                if(entry != null && DateTime.UtcNow.Subtract(entry.Timestamp).TotalHours < 4)
                 {
                     lastUpdate = entry.Timestamp;
                     value = entry.Temperature;
