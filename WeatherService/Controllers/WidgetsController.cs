@@ -2,6 +2,7 @@
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.Widgets;
+using WeatherService.Utils;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -18,14 +19,14 @@ namespace WeatherService.Controllers
             var m = new SingleStationValue<Double>()
             {
                 StationName = station.Name,
-                StationLocation = station.Location
+                StationLocation = station.Location,
             };
 
             using (var db = new WeatherDb())
             {
                 var entry = db.LogEntry.Where(l => l.StationId.Equals(station.Id)).OrderByDescending(l => l.Timestamp).FirstOrDefault();
 
-                if(entry != null && DateTime.UtcNow.Subtract(entry.Timestamp).TotalHours < 4)
+                if(entry != null && DateTime.UtcNow.Subtract(entry.Timestamp).TotalHours < 5)
                 {
                     m.LastUpdate = entry.Timestamp;
                     m.Value = entry.Temperature;
@@ -39,17 +40,18 @@ namespace WeatherService.Controllers
         public IActionResult WebcamImage()
         {
             var station = GetStations().First();
+            var gen = new RandomGenerator();
 
             var m = new SingleStationValue<String>()
             {
                 StationName = station.Name,
                 StationLocation = station.Location,
-                Value = station.WebcamUrl
+                Value = gen.AppendParameterToUrl(station.WebcamUrl)
             };
 
             return View(m);
         }
-            
+ 
         private IEnumerable<WeatherStation> GetStations()
         {
             using (var db = new WeatherDb())

@@ -108,7 +108,9 @@
                     {
                         el.attr('data-widget-last-sync', now);
 
-                        $.get(el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations')).done(function(html)
+                        var url = el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations') + '&t=' + new Date().getTime();
+
+                        $.get(url).done(function(html)
                         {
                             el.html(html);
                         });
@@ -154,7 +156,7 @@
                 storeWidgets();
             }
 
-            setInterval(refreshWidgets, 1000 * 60 * 3);
+            setInterval(refreshWidgets, 1000 * 30);
 
             var gridster = $(".gridster ul").gridster(
             {
