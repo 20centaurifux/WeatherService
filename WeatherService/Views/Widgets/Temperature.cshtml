@@ -2,36 +2,19 @@
 
 @{
     var guid = Guid.NewGuid().ToString();
+    var percent = 0.0;
+
+    if(!Model.IsNull)
+    {
+        percent = (Model.Value / 60) * 100;
+    }
 }
 
 @if(!Model.IsNull)
 {
 <text>
 <script type="text/javascript">
-    google.charts.load('current', { 'packages': ['gauge'] });
-
-    google.charts.setOnLoadCallback(function()
-    {
-        var data = google.visualization.arrayToDataTable(
-        [
-            ['Label', 'Value'],
-            ['°C', @Json.Serialize(Model.Value)]
-        ]);
-
-    var options =
-    {
-            width: 90, height: 90,
-            redFrom: 30, redTo: 50,
-            yellowFrom: 25, yellowTo: 30,
-            greenFrom: 16, greenTo: 25,
-            minorTicks: 5,
-            max: 50,
-            min: -15
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('@guid'));
-        chart.draw(data, options);
-    });
+    $("#@guid").gaugeMeter();
 </script>
 </text>
 }
@@ -46,7 +29,7 @@
 }
 else
 {
-<div style="width:120px; padding-left:11px;">
-    <div id="@guid"></div>
-</div>
+    <div style="width:120px;">
+        <div style="margin-left:-10px;" id="@guid" class="GaugeMeter" data-percent="@percent" data-text="<div style='color:White; font-size:14px; text-align:center; width:55px;'>@Model.Value&deg;C</font>" data-size="100" data-width="15" data-theme="White" data-back="RGBa(0,0,0,.1)" data-style="Arch" data-label_color="#FFF"></div>
+    </div>
 }

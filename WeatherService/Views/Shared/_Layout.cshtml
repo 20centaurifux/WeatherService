@@ -7,56 +7,16 @@
 
     <title>@ViewBag.Title</title>
 
-    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/lib/Font-Awesome/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/lib/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
     <link href="~/lib/gridster/dist/jquery.gridster.min.css" rel="stylesheet" />
 
-    <style type="text/css">
-        div.filter {
-            border: solid 1px #e4e4e4;
-            padding: 5px;
-        }
+    <link href="~/css/base.css" rel="stylesheet" />
+    <link href="~/css/gridster.css" rel="stylesheet" />
+    <link href="~/css/gaugemeter.css" rel="stylesheet" />
 
-        .gridster ul {
-            list-style: none;
-        }
-
-        .gridster li {
-            text-align: center;
-            position: relative;
-            box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            padding: 5px;
-            background-color: green;
-        }
-
-            .gridster li span {
-                width: 100%;
-                display: block;
-            }
-
-                .gridster li span:before {
-                    display: block;
-                    height: 64px;
-                    width: 100%;
-                    position: absolute;
-                    top: 15%;
-                    left: 0;
-                    right: 0;
-                }
-
-                .gridster li span:after {
-                    position: absolute;
-                    bottom: 5px;
-                    left: 0;
-                    right: 0;
-                }
-    </style>
-
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
     <script src="~/lib/jquery.generateId/dist/generate-id.min.js"></script>
@@ -70,6 +30,7 @@
     <script src="~/lib/gridster/dist/jquery.gridster.min.js"></script>
 
     <script src="~/js/jquery.ConfirmDialog.js"></script>
+    <script src="~/js/GaugeMeter.js"></script>
 
     <script type="text/javascript">
         var app = null;

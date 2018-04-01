@@ -1,0 +1,40 @@
+﻿.gridster ul
+{
+    list-style: none;
+}
+
+.gridster li
+{
+    text-align: center;
+    position: relative;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    padding: 5px;
+    background-color: green;
+}
+
+.gridster li span
+{
+    width: 100%;
+    display: block;
+}
+
+.gridster li span:before
+{
+    display: block;
+    height: 64px;
+    width: 100%;
+    position: absolute;
+    top: 15%;
+    left: 0;
+    right: 0;
+}
+
+.gridster li span:after
+{
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+}
