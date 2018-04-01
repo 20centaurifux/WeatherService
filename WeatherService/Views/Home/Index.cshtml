@@ -225,7 +225,8 @@
                         {
                             var stationId = selected[0];
 
-                            $(this.$el).find('.form-check-input[data-station-id="' + stationId + '"]').attr('checked', true);
+                            $(this.$el).find('.form-check-input').prop('checked', false);
+                            $(this.$el).find('.form-check-input[data-station-id="' + stationId + '"]').prop('checked', true);
                         }
                     }
                 }
