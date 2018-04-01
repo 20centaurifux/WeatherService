@@ -1,0 +1,29 @@
+﻿@model WeatherService.Models.Widgets.SingleStationValue<int>
+
+@{
+    var guid = Guid.NewGuid().ToString();
+}
+
+@if(!Model.IsNull)
+{
+<text>
+<script type="text/javascript">
+    $("#@guid").gaugeMeter();
+</script>
+</text>
+}
+
+<p style="font-size:x-small; font-weight:bold; margin:2px; margin-bottom:5px; color:white;">
+    @Model.StationName
+</p>
+
+@if (Model.IsNull)
+{
+    <p style="padding-top:20px; font-size:16px; font-weight:bold; color:white;">N/A</p>
+}
+else
+{
+    <div style="width:120px;">
+        <div style="margin-left:-10px;" id="@guid" class="GaugeMeter" data-percent="@Model.Value" data-text="<div style='color:White; font-size:14px; text-align:center; width:55px;'>@Model.Value%</div>" data-size="80" data-width="15" data-theme="White" data-back="RGBa(0,0,0,.1)" data-stripe="2" data-label_color="#FFF"></div>
+    </div>
+}
