@@ -1,0 +1,88 @@
+﻿@model WeatherService.Models.Widgets.LogEntries
+
+@{
+    var guid = Guid.NewGuid().ToString();
+}
+<script src="~/lib/chart.js/dist/Chart.bundle.min.js"></script>
+
+<div style="width:240px; height:240px;">
+    <canvas id="@guid"></canvas>
+</div>
+
+<script type="text/javascript">
+    var data = [];
+
+    @foreach (var e in Model.Entries)
+    {
+    <text>
+    data.push({ t: new Date(@e.Timestamp.Year, @e.Timestamp.Month, @e.Timestamp.Day, @e.Timestamp.Hour, @e.Timestamp.Minute, @e.Timestamp.Second), y: @e.Pressure });
+    </text>
+    }
+
+    var ctx = document.getElementById('@guid').getContext('2d');
+
+	ctx.canvas.width = 120;
+	ctx.canvas.height = 120;
+
+    var cfg =
+    {
+		type: 'bar',
+        data:
+        {
+            datasets:
+            [{
+				data: data,
+				type: 'line',
+				pointRadius: 0,
+				fill: true,
+				lineTension: 0,
+				borderWidth: 2,
+				borderColor: '#2d89ef',
+				backgroundColor: '#2d89ef'
+			}]
+		},
+        options:
+        {
+            title:
+            {
+                fontSize: 10,
+                fontColor: 'white',
+                text: '@Model.StationName hPa',
+                display: true
+            },
+            legend:
+            {
+                display: false
+            },
+            scales:
+            {
+                xAxes:
+                [{
+					type: 'time',
+					time: { unit: 'hour' },
+					distribution: 'series',
+                    ticks:
+                    {
+                        source: 'auto',
+                        fontSize: 10,
+                        fontColor: 'white'
+					}
+				}],
+                yAxes:
+                [{
+                    scaleLabel:
+                    {
+						display: false
+                    },
+                    ticks:
+                    {
+                        fontSize: 10,
+                        fontColor: 'white'
+					}
+				}]
+			}
+		}
+    };
+
+	new Chart(ctx, cfg);
+</script>

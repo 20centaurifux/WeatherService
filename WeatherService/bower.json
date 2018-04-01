@@ -11,7 +11,8 @@
     "popper.js": "v1.14.1",
     "jquery-validation": "1.17.0",
     "Microsoft.jQuery.Unobtrusive.Validation": "3.2.3",
-    "gridster": "gridster-js#v0.7.0"
+    "gridster": "gridster-js#v0.7.0",
+    "chart.js": "chartjs#v2.7.2"
   },
   "resolutions": {
     "bootstrap": "v4.0.0",

@@ -3,3 +3,10 @@
     border: solid 1px #e4e4e4;
     padding: 5px;
 }
+
+canvas
+{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}

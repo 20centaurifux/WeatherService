@@ -30,6 +30,21 @@
     "Background": "#9b59b6"
   },
   {
+    "Guid": "15fe2e9c-53b6-44e4-afb2-1d3b417b93d5",
+    "Name": "Pressure",
+    "Description": "Today's pressure measurements.",
+    "Url": "Widgets/Pressure",
+    "SupportsMultipleStations": false,
+    "RequiresTemperature": false,
+    "RequiresPressure": true,
+    "RequiresHumidity": false,
+    "RequiresUV": false,
+    "RequiresWebcamUrl": false,
+    "Width": 2,
+    "Height": 2,
+    "Background": "#2b5797"
+  },
+  {
     "Guid": "8e0ce9be-ce79-4ace-9159-a8a158694fa5",
     "Name": "Webcam",
     "Description": "Displays the latest webcam image.",
