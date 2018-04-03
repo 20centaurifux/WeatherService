@@ -19,7 +19,7 @@ namespace WeatherService.Controllers
             var station = GetStation();
 
             var entry = GetCurrentLogEntry(station);
-            var m = CreateSingleStationValue<double>(station);
+            var m = CreateSingleStationValue<Double?>(station);
 
             if (entry != null)
             {
@@ -36,7 +36,7 @@ namespace WeatherService.Controllers
             var station = GetStation();
 
             var entry = GetCurrentLogEntry(station);
-            var m = CreateSingleStationValue<int>(station);
+            var m = CreateSingleStationValue<int?>(station);
 
             if (entry != null)
             {

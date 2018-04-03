@@ -2,16 +2,7 @@
 {
     public class SingleStationValue<T> : ASingleStation
     {
-        private object _value = null;
-
-        // Generic types are not allowed to be nullable :(
-        public bool IsNull
-        {
-            get
-            {
-                return _value == null;
-            }
-        }
+        private T _value = default(T);
 
         public T Value
         {

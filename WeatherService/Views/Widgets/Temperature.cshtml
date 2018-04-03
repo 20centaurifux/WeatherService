@@ -1,16 +1,16 @@
-﻿@model WeatherService.Models.Widgets.SingleStationValue<Double>
+﻿@model WeatherService.Models.Widgets.SingleStationValue<double?>
 
 @{
     var guid = Guid.NewGuid().ToString();
     var percent = 0.0;
 
-    if(!Model.IsNull)
+    if(Model.Value != null)
     {
-        percent = (Model.Value / 60) * 100;
+        percent = ((double)Model.Value / 60) * 100;
     }
 }
 
-@if(!Model.IsNull)
+@if(Model.Value != null)
 {
 <text>
 <script type="text/javascript">
@@ -23,7 +23,7 @@
     @Model.StationName
 </p>
 
-@if (Model.IsNull)
+@if (Model.Value == null)
 {
     <p style="padding-top:20px; font-size:16px; font-weight:bold; color:white;">N/A</p>
 }

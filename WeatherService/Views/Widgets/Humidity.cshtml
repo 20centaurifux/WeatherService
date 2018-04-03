@@ -1,10 +1,10 @@
-﻿@model WeatherService.Models.Widgets.SingleStationValue<int>
+﻿@model WeatherService.Models.Widgets.SingleStationValue<int?>
 
 @{
     var guid = Guid.NewGuid().ToString();
 }
 
-@if(!Model.IsNull)
+@if(Model.Value != null)
 {
 <text>
 <script type="text/javascript">
@@ -17,7 +17,7 @@
     @Model.StationName
 </p>
 
-@if (Model.IsNull)
+@if (Model.Value == null)
 {
     <p style="padding-top:20px; font-size:16px; font-weight:bold; color:white;">N/A</p>
 }
