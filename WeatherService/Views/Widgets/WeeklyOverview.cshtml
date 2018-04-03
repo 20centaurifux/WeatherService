@@ -1,0 +1,119 @@
+﻿@model WeatherService.Models.Widgets.LogEntries
+
+@{
+    var guid = Guid.NewGuid().ToString();
+}
+<script src="~/lib/chart.js/dist/Chart.bundle.min.js"></script>
+
+<div style="width:360px; height:240px; margin-left:-5px;">
+    <canvas id="@guid"></canvas>
+</div>
+
+<script type="text/javascript">
+    var temperature = [];
+    var humidity = [];
+    var pressure = [];
+
+    @foreach (var e in Model.Entries)
+    {
+    <text>
+    temperature.push({ t: new Date(@e.Timestamp.Year, @e.Timestamp.Month, @e.Timestamp.Day, @e.Timestamp.Hour, @e.Timestamp.Minute, @e.Timestamp.Second), y: @Json.Serialize(e.Temperature) });
+    humidity.push({ t: new Date(@e.Timestamp.Year, @e.Timestamp.Month, @e.Timestamp.Day, @e.Timestamp.Hour, @e.Timestamp.Minute, @e.Timestamp.Second), y: @e.Humidity });
+    pressure.push({ t: new Date(@e.Timestamp.Year, @e.Timestamp.Month, @e.Timestamp.Day, @e.Timestamp.Hour, @e.Timestamp.Minute, @e.Timestamp.Second), y: @Json.Serialize(e.Pressure / 10) });
+    </text>
+    }
+
+    var ctx = document.getElementById('@guid').getContext('2d');
+
+	ctx.canvas.width = 360;
+	ctx.canvas.height = 240;
+
+    var cfg =
+    {
+		type: 'line',
+        data:
+        {
+            datasets:
+            [
+                {
+                    label: '°C',
+				    data: temperature,
+				    type: 'line',
+				    pointRadius: 0,
+				    fill: false,
+				    lineTension: 0,
+				    borderWidth: 2,
+				    borderColor: '#b91d47',
+				    backgroundColor: '#b91d47'
+			    },
+                {
+                    label: 'Humidity',
+				    data: humidity,
+				    type: 'line',
+				    pointRadius: 0,
+				    fill: false,
+				    lineTension: 0,
+				    borderWidth: 2,
+				    borderColor: '#2b5797',
+				    backgroundColor: '#2b5797'
+                },
+                {
+                    label: 'kPa',
+				    data: pressure,
+				    type: 'line',
+				    pointRadius: 0,
+				    fill: false,
+				    lineTension: 0,
+				    borderWidth: 2,
+				    borderColor: '#9f00a7',
+				    backgroundColor: '#9f00a7'
+			    }
+            ],
+		},
+        options:
+        {
+            title:
+            {
+                fontSize: 12,
+                fontColor: 'black',
+                text: '@Model.StationName',
+                display: true
+            },
+            legend:
+            {
+                fontSize: 10,
+                fontColor: 'black',
+                display: true
+            },
+            scales:
+            {
+                xAxes:
+                [{
+					type: 'time',
+					time: { unit: 'day' },
+					distribution: 'series',
+                    ticks:
+                    {
+                        source: 'auto',
+                        fontSize: 10,
+                        fontColor: 'black'
+					}
+				}],
+                yAxes:
+                [{
+                    scaleLabel:
+                    {
+						display: true
+                    },
+                    ticks:
+                    {
+                        fontSize: 10,
+                        fontColor: 'black'
+					}
+				}]
+			}
+		}
+    };
+
+	new Chart(ctx, cfg);
+</script>

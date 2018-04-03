@@ -45,6 +45,21 @@
     "Background": "#2b5797"
   },
   {
+    "Guid": "c21e0735-d07c-4977-8d4a-0dbf5d899e6a",
+    "Name": "Weekly overview",
+    "Description": "Temperature, humidity & pressure of the current week.",
+    "Url": "Widgets/WeeklyOverview",
+    "SupportsMultipleStations": false,
+    "RequiresTemperature": true,
+    "RequiresPressure": true,
+    "RequiresHumidity": true,
+    "RequiresUV": false,
+    "RequiresWebcamUrl": false,
+    "Width": 3,
+    "Height": 2,
+    "Background": "#ffc40d"
+  },
+  {
     "Guid": "8e0ce9be-ce79-4ace-9159-a8a158694fa5",
     "Name": "Webcam",
     "Description": "Displays the latest webcam image.",

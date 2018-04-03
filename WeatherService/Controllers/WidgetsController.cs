@@ -67,6 +67,32 @@ namespace WeatherService.Controllers
             };
         }
 
+        [Security.Filters.Widget(Guid = "c21e0735-d07c-4977-8d4a-0dbf5d899e6a")]
+        public IActionResult WeeklyOverview()
+        {
+            var station = GetStation();
+
+            using (var db = new WeatherDb())
+            {
+                var start = Utils.DateTimeConverter.BeginningOfDay(DateTime.UtcNow);
+
+                while(start.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    start = start.AddDays(-1);
+                }
+
+                var end = Utils.DateTimeConverter.EndOfDay(start.AddDays(6));
+
+                var m = new LogEntries()
+                {
+                    StationName = station.Name,
+                    Entries = db.LogEntry.Where(l => l.StationId.Equals(station.Id) && l.Timestamp >= start && l.Timestamp <= end).ToArray()
+                };
+
+                return View(m);
+            };
+        }
+
         [Security.Filters.Widget(Guid = "8e0ce9be-ce79-4ace-9159-a8a158694fa5")]
         public IActionResult WebcamImage()
         {
