@@ -1,0 +1,45 @@
+[
+  {
+    "outputFileName": "wwwroot/bundles/core.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/popper.js/dist/umd/popper.js",
+      "wwwroot/lib/jquery.generateId/dist/generate-id.js",
+      "wwwroot/lib/jquery.validation/dist/jquery.validate.js",
+      "wwwroot/lib/Microsoft.jQuery.Unobtrusive.Validation/jquery.validate.unobtrusive.js",
+      "wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+      "wwwroot/lib/vue/dist/vue.js",
+      "wwwroot/lib/datatables/media/js/jquery.dataTables.js",
+      "wwwroot/lib/datatables/media/js/dataTables.bootstrap4.js",
+      "wwwroot/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js",
+      "wwwroot/lib/gridster/dist/jquery.gridster.js",
+      "wwwroot/lib/chart.js/dist/Chart.js",
+      "wwwroot/js/GaugeMeter.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/bundles/core.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "wwwroot/lib/Font-Awesome/css/font-awesome.min.css",
+      "wwwroot/lib/datatables/media/css/dataTables.bootstrap4.min.css",
+      "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css",
+      "wwwroot/lib/gridster/dist/jquery.gridster.min.css",
+      "wwwroot/css/base.css",
+      "wwwroot/css/gaugemeter.css",
+      "wwwroot/css/gridster.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/jquery.ConfirmDialog.min.js",
+    "inputFiles": [
+      "wwwroot/js/jquery.ConfirmDialog.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/home/dashboard.min.js",
+    "inputFiles": [
+      "wwwroot/js/home/dashboard.js"
+    ]
+  }
+]

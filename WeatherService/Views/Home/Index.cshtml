@@ -1,4 +1,5 @@
-﻿@model WeatherService.Models.View.Dashboard
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model WeatherService.Models.View.Dashboard
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -89,172 +90,177 @@
         <button v-else type="button" class="btn btn-primary" disabled>Add widget</button>
     </template>
 
-    <script src="~/js/home/dashboard.js"></script>
+    <environment names="Development">
+        <script src="~/js/home/dashboard.js"></script>
+    </environment>
+    <environment names="Staging, Test, Production">
+        <script src="~/js/home/dashboard.min.js"></script>
+    </environment>
 
     <script type="text/javascript">
-        $(document).ready(function()
+    $(document).ready(function()
+    {
+        var pageApp = null;
+
+        @if(User.Identity.IsAuthenticated)
         {
-            var pageApp = null;
+        <text>
+        var dashboard = new Dashboard({ updateUrl: '/Home/UpdateDashboard' });
+        </text>
+        }
+        else
+        {
+        <text>
+        var dashboard = new Dashboard();
+        </text>
+        }
 
-            @if(User.Identity.IsAuthenticated)
+        dashboard.refresh();
+
+        $('<li class="nav-item">' +
+            '    <button type="button" class="btn btn-primary">Add widget</button>' +
+            '</li>')
+            .appendTo('#action-buttons')
+            .click(function()
             {
-            <text>
-            var dashboard = new Dashboard({ updateUrl: '/Home/UpdateDashboard' });
-            </text>
-            }
-            else
-            {
-            <text>
-            var dashboard = new Dashboard();
-            </text>
-            }
-
-            dashboard.refresh();
-
-            $('<li class="nav-item">' +
-                '    <button type="button" class="btn btn-primary">Add widget</button>' +
-                '</li>')
-                .appendTo('#action-buttons')
-                .click(function()
-                {
-                    $('#widget-factory-dialog').modal('show');
-                    pageApp.$emit('new-widget-dialog-opened');
-                });
-
-            Vue.component('widgetOptions',
-            {
-                props: ['widget', 'stations', 'selection'],
-                template: '#widgetOptions',
-                updated: function()
-                {
-                    this.selectStations();
-                },
-                methods:
-                {
-                    updateSingleSelection()
-                    {
-                        var id = $(this.$el).find('.form-check-input:checked').attr('data-station-id');
-
-                        this.selection.splice(0, this.selection.length, id);
-                    },
-                    updateMultiSelection()
-                    {
-                        var self = this;
-
-                        self.selection.splice(0, self.selection.length);
-
-                        $(this.$el).find('option:checked').each(function()
-                        {
-                            self.selection.push($(this).val());
-                        });
-                    },
-                    selectStations()
-                    {
-                        var selected = this.selection;
-
-                        if (this.widget.supportsMultipleStations)
-                        {
-                            $(this.$el).find('option').each(function()
-                            {
-                                $(this).attr('selected', $.inArray($(this).val(), selected) != -1);
-                            });
-                        }
-                        else
-                        {
-                            var stationId = selected[0];
-
-                            $(this.$el).find('.form-check-input').prop('checked', false);
-                            $(this.$el).find('.form-check-input[data-station-id="' + stationId + '"]').prop('checked', true);
-                        }
-                    }
-                }
+                $('#widget-factory-dialog').modal('show');
+                pageApp.$emit('new-widget-dialog-opened');
             });
 
-            Vue.component('addWidgetButton',
+        Vue.component('widgetOptions',
+        {
+            props: ['widget', 'stations', 'selection'],
+            template: '#widgetOptions',
+            updated: function()
             {
-                props: ['widget', 'stations'],
-                template: '#addWidgetButton',
-                methods:
+                this.selectStations();
+            },
+            methods:
+            {
+                updateSingleSelection()
                 {
-                    addWidget()
-                    {
-                        dashboard.addWidget(this.widget, this.stations);
-                    }
-                }
-            });
+                    var id = $(this.$el).find('.form-check-input:checked').attr('data-station-id');
 
-            Vue.component('widgetFactory',
-            {
-                props:
-                {
-                    widgets: { type: Array },
-                    stations: { type: Object },
-                    selectedWidget: { type: Object, default() { return {} } },
-                    selectedStations: { type: Array, default() { return [] }}
+                    this.selection.splice(0, this.selection.length, id);
                 },
-                template: '#widgetFactory',
-                created: function()
+                updateMultiSelection()
                 {
                     var self = this;
 
-                    this.$parent.$on('new-widget-dialog-opened', function()
+                    self.selection.splice(0, self.selection.length);
+
+                    $(this.$el).find('option:checked').each(function()
                     {
-                        self.selectDefault();
+                        self.selection.push($(this).val());
                     });
                 },
-                methods:
+                selectStations()
                 {
-                    widgetSelected(widget)
+                    var selected = this.selection;
+
+                    if (this.widget.supportsMultipleStations)
                     {
-                        this.selectedWidget = widget;
-                        this.selectedStations.splice(0, this.selectedStations.length);
-
-                        var stations = this.stations[widget.guid];
-
-                        if (stations.length > 0)
+                        $(this.$el).find('option').each(function()
                         {
-                            this.selectedStations.push(stations[0].id);
-                        }
-                    },
-                    selectDefault()
-                    {
-                        if (this.widgets.length)
-                        {
-                            this.widgetSelected(this.widgets[0]);
-
-                            $(this.$el).find('.list-group-item-action').removeClass('active');
-                            $(this.$el).find('.list-group-item-action:first').addClass('active');
-                        }
+                            $(this).attr('selected', $.inArray($(this).val(), selected) != -1);
+                        });
                     }
-                },
-                computed:
-                {
-                    availableStations()
+                    else
                     {
-                        if (this.selectedWidget)
-                        {
-                            return this.stations[this.selectedWidget.guid];
-                        }
+                        var stationId = selected[0];
 
-                        return [];
+                        $(this.$el).find('.form-check-input').prop('checked', false);
+                        $(this.$el).find('.form-check-input[data-station-id="' + stationId + '"]').prop('checked', true);
                     }
-                },
-                mounted: function()
-                {
-                    this.selectDefault();
                 }
-            });
-
-            pageApp = new Vue(
-            {
-                el: '#page',
-                data:
-                {
-                    availableWidgets: @Json.Serialize(Model.AvailableWidgets),
-                    supportedStations: @Json.Serialize(Model.SupportedStations)
-                }
-            });
+            }
         });
+
+        Vue.component('addWidgetButton',
+        {
+            props: ['widget', 'stations'],
+            template: '#addWidgetButton',
+            methods:
+            {
+                addWidget()
+                {
+                    dashboard.addWidget(this.widget, this.stations);
+                }
+            }
+        });
+
+        Vue.component('widgetFactory',
+        {
+            props:
+            {
+                widgets: { type: Array },
+                stations: { type: Object },
+                selectedWidget: { type: Object, default() { return {} } },
+                selectedStations: { type: Array, default() { return [] }}
+            },
+            template: '#widgetFactory',
+            created: function()
+            {
+                var self = this;
+
+                this.$parent.$on('new-widget-dialog-opened', function()
+                {
+                    self.selectDefault();
+                });
+            },
+            methods:
+            {
+                widgetSelected(widget)
+                {
+                    this.selectedWidget = widget;
+                    this.selectedStations.splice(0, this.selectedStations.length);
+
+                    var stations = this.stations[widget.guid];
+
+                    if (stations.length > 0)
+                    {
+                        this.selectedStations.push(stations[0].id);
+                    }
+                },
+                selectDefault()
+                {
+                    if (this.widgets.length)
+                    {
+                        this.widgetSelected(this.widgets[0]);
+
+                        $(this.$el).find('.list-group-item-action').removeClass('active');
+                        $(this.$el).find('.list-group-item-action:first').addClass('active');
+                    }
+                }
+            },
+            computed:
+            {
+                availableStations()
+                {
+                    if (this.selectedWidget)
+                    {
+                        return this.stations[this.selectedWidget.guid];
+                    }
+
+                    return [];
+                }
+            },
+            mounted: function()
+            {
+                this.selectDefault();
+            }
+        });
+
+        pageApp = new Vue(
+        {
+            el: '#page',
+            data:
+            {
+                availableWidgets: @Json.Serialize(Model.AvailableWidgets),
+                supportedStations: @Json.Serialize(Model.SupportedStations)
+            }
+        });
+    });
     </script>
 
     <div id="page">

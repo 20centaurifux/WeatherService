@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -7,31 +8,15 @@
 
     <title>@ViewBag.Title</title>
 
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/lib/Font-Awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/lib/datatables/media/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-    <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
-    <link href="~/lib/gridster/dist/jquery.gridster.min.css" rel="stylesheet" />
+    <link href="~/bundles/core.css" rel="stylesheet" />
+    <script src="~/bundles/core.min.js"></script>
 
-    <link href="~/css/base.css" rel="stylesheet" />
-    <link href="~/css/gridster.css" rel="stylesheet" />
-    <link href="~/css/gaugemeter.css" rel="stylesheet" />
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/popper.js/dist/umd/popper.min.js"></script>
-    <script src="~/lib/jquery.generateId/dist/generate-id.min.js"></script>
-    <script src="~/lib/jquery.validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/Microsoft.jQuery.Unobtrusive.Validation/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="~/lib/vue/dist/vue.min.js"></script>
-    <script src="~/lib/datatables/media/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/datatables/media/js/dataTables.bootstrap4.min.js"></script>
-    <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-    <script src="~/lib/gridster/dist/jquery.gridster.min.js"></script>
-    <script src="~/lib/chart.js/dist/Chart.bundle.min.js"></script>
-
-    <script src="~/js/jquery.ConfirmDialog.js"></script>
-    <script src="~/js/GaugeMeter.js"></script>
+    <environment names="Development">
+        <script src="~/js/jquery.ConfirmDialog.js"></script>
+    </environment>
+    <environment names="Staging, Test, Production">
+        <script src="~/js/jquery.ConfirmDialog.min.js"></script>
+    </environment>
 
     <script type="text/javascript">
         var app = null;
@@ -144,7 +129,7 @@
                         <station-selection :stations="stations"></station-selection>
                     </li>
 
-                    @if(User.IsInRole("Administrator"))
+                    @if (User.IsInRole("Administrator"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -158,7 +143,7 @@
                         </li>
                     }
 
-                    @if(User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarMyAccount" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -179,8 +164,7 @@
                     }
                 </ul>
 
-                <ul class="navbar-nav" id="action-buttons">
-                </ul>
+                <ul class="navbar-nav" id="action-buttons"></ul>
             </div>
         </nav>
     </div>
