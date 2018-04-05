@@ -5,18 +5,17 @@
     ViewBag.Title = "Home";
 
     <style>
-        .bg
-        {
-            position:fixed;
-            top:0;
-            right:0;
-            bottom:0;
-            left:0;
-            background-size:cover;
-            background-position:50% 50%;
-            background-image:url('assets/bg-home.jpg');
-            background-repeat:repeat;
-            z-index:-1;
+        .bg {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-size: cover;
+            background-position: 50% 50%;
+            background-image: url('assets/bg-home.jpg');
+            background-repeat: repeat;
+            z-index: -1;
         }
     </style>
 
@@ -90,88 +89,27 @@
         <button v-else type="button" class="btn btn-primary" disabled>Add widget</button>
     </template>
 
+    <script src="~/js/home/dashboard.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function()
         {
             var pageApp = null;
 
-            function refreshWidgets()
+            @if(User.Identity.IsAuthenticated)
             {
-                var now = new Date().getTime() / 1000;
-
-                $('.gridster li').each(function()
-                {
-                    var el = $(this);
-                    var lastSync = parseInt(el.attr('data-widget-last-sync'), 10);
-
-                    if (!lastSync || now - lastSync >= 180)
-                    {
-                        el.attr('data-widget-last-sync', now);
-
-                        var url = el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations') + '&t=' + new Date().getTime();
-
-                        $.get(url).done(function(html)
-                        {
-                            el.html(html);
-                        });
-                    }
-                });
+            <text>
+            var dashboard = new Dashboard({ updateUrl: '/Home/UpdateDashboard' });
+            </text>
+            }
+            else
+            {
+            <text>
+            var dashboard = new Dashboard();
+            </text>
             }
 
-            function widgetToHtml(widget, stations)
-            {
-                return '<li style="background-color:' + widget.background + ';" data-widget-stations="' + stations.join(',') + '" data-widget-guid="' + widget.guid + '" data-widget-url="' + widget.url + '" data-widget-last-sync="0"></li>';
-            }
-
-            function storeWidgets()
-            {
-                @if(User.Identity.IsAuthenticated)
-                {
-                <text>
-                var items = [];
-
-                $('.gridster li').each(function()
-                {
-                    var el = $(this);
-
-                    items.push({ widgetId: el.attr('data-widget-guid'), x: el.attr('data-col'), y: el.attr('data-row'), filter: el.attr('data-widget-stations').split(',') });
-                });
-
-                $.ajax(
-                {
-                    url: '/Home/UpdateDashboard',
-                    type: 'POST',
-                    data: JSON.stringify(items),
-                    dataType: 'json',
-                    contentType: 'application/json'
-                }).fail(function(xhr, textStatus, errorThrown) { console.warn(xhr.responseText); });
-                </text>
-                }
-            }
-
-            function addNewWidget(widget, stations, position)
-            {
-                gridster.add_widget(widgetToHtml(widget, stations), widget.width, widget.height);
-                refreshWidgets();
-                storeWidgets();
-            }
-
-            setInterval(refreshWidgets, 1000 * 30);
-
-            var gridster = $(".gridster ul").gridster(
-            {
-                widget_base_dimensions: [120, 120],
-                widget_margins: [10, 10],
-                draggable:
-                {
-                    stop: function(e, ui)
-                    {
-                        setTimeout(storeWidgets, 0);
-                    }
-                }
-            }).data('gridster');
-
-            $('.gridster ul').css({ 'padding': '0' });
+            dashboard.refresh();
 
             $('<li class="nav-item">' +
                 '    <button type="button" class="btn btn-primary">Add widget</button>' +
@@ -240,7 +178,7 @@
                 {
                     addWidget()
                     {
-                        addNewWidget(this.widget, this.stations);
+                        dashboard.addWidget(this.widget, this.stations);
                     }
                 }
             });
@@ -316,8 +254,6 @@
                     supportedStations: @Json.Serialize(Model.SupportedStations)
                 }
             });
-
-            refreshWidgets();
         });
     </script>
 
@@ -337,5 +273,5 @@
         </ul>
     </div>
 
-    <div id="bg" class="bg" />
+    <div id="bg" class="bg"></div>
 }

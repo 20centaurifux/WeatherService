@@ -62,8 +62,6 @@
 
     opts = $.extend(opts, options);
 
-    var sel = $(obj);
-
     sel.data("jquery.confirmDialog.options", opts);
 
     if(!$(this).data("jquery.confirmDialog.id"))
