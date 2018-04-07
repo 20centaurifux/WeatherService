@@ -21,7 +21,7 @@
     "outputFileName": "wwwroot/bundles/core.css",
     "inputFiles": [
       "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
-      "wwwroot/lib/Font-Awesome/css/font-awesome.min.css",
+      "wwwroot/lib/Font-Awesome/web-fonts-with-css/css/fontawesome-all.css",
       "wwwroot/lib/datatables/media/css/dataTables.bootstrap4.min.css",
       "wwwroot/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css",
       "wwwroot/lib/gridster/dist/jquery.gridster.min.css",

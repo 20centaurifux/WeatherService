@@ -38,3 +38,8 @@
     left: 0;
     right: 0;
 }
+
+a.dashboard-action
+{
+    cursor: pointer;
+}

@@ -66,7 +66,16 @@
 
                 $.get(url).done(function(html)
                 {
-                    el.html(html);
+                    $(html +
+                      '<div class="dashboard-action" style="display:none;position:absolute;top:0px;width:' + el.width() + 'px;">' +
+                      '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle" aria-hidden="true"></i></a>' +
+                      '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
+                    .appendTo(el);
+
+                    el.unbind('mouseenter').unbind('mouseleave');
+
+                    el.bind('mouseenter', () => { el.find('div.dashboard-action').show() });
+                    el.bind('mouseleave', () => { el.find('div.dashboard-action').hide() });
                 });
             }
         });
