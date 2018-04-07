@@ -66,16 +66,21 @@
 
                 $.get(url).done(function(html)
                 {
-                    $(html +
-                      '<div class="dashboard-action" style="display:none;position:absolute;top:0px;width:' + el.width() + 'px;">' +
-                      '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle" aria-hidden="true"></i></a>' +
-                      '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
+                    var content = $(html +
+                      '<div class="dashboard-action"><h1 class="dashboard-action">Edit</h1>' +
+                      '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle dashboard-action" aria-hidden="true"></i></a>' +
+                      '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit dashboard-action" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
                     .appendTo(el);
 
                     el.unbind('mouseenter').unbind('mouseleave');
 
                     el.bind('mouseenter', () => { el.find('div.dashboard-action').show() });
                     el.bind('mouseleave', () => { el.find('div.dashboard-action').hide() });
+
+                    content.find('a:eq(0)').bind('click', () =>
+                    {
+                        gridster.remove_widget(el.get(0), storeWidgets);
+                    });
                 });
             }
         });
