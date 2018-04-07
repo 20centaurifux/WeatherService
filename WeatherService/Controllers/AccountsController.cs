@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -34,24 +33,41 @@ namespace WeatherService.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Delete(string id)
         {
-            using (var db = new WeatherDb())
+            var user = _userManager.FindByIdAsync(id).Result;
+
+            if(user.UserName.ToLower().Equals(User.Identity.Name.ToLower()))
             {
-                var user = _userManager.FindByIdAsync(id).Result;
-
-                if(user.UserName.ToLower().Equals(User.Identity.Name.ToLower()))
-                {
-                    return Forbid();
-                }
-
-                var result = _userManager.DeleteAsync(user).Result;
-
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-
-                return BadRequest();
+                return Forbid();
             }
+
+            var result = _userManager.DeleteAsync(user).Result;
+
+            if (result.Succeeded)
+            {
+                using (var db = new WeatherDb())
+                {
+                    if (db.DataProvider.Name.Equals("SQLite"))
+                    {
+                        db.BeginTransaction();
+
+                        try
+                        {
+                            DashboardHelper.DeleteDashboardItems(db, user.Id);
+
+                            db.CommitTransaction();
+                        }
+                        catch (Exception ex)
+                        {
+                            db.RollbackTransaction();
+                            throw ex;
+                        }
+                    }
+                }
+
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         [HttpGet("Accounts/Edit/{id}")]

@@ -89,9 +89,7 @@ namespace WeatherService.Controllers
 
                 try
                 {
-                    db.DashboardItem
-                        .Where(item => item.UserId.Equals(user.Id))
-                        .Delete();
+                    DashboardHelper.DeleteDashboardItems(db, user.Id);
 
                     foreach (var item in items)
                     {

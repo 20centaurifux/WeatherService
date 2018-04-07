@@ -131,9 +131,39 @@ namespace WeatherService.Controllers
         {
             using (var db = new WeatherDb())
             {
-                db.WeatherStation
-                    .Where(s => s.Id.Equals(id))
-                    .Delete();
+                db.BeginTransaction();
+
+                try
+                {
+                    if (db.DataProvider.Name.Equals("SQLite"))
+                    {
+                        db.LogEntry
+                            .Where(e => e.StationId.Equals(id))
+                            .Delete();
+
+                        db.DashbordFilter
+                            .Where(f => f.StationId.Equals(id))
+                            .Delete();
+                    }
+
+                    var q = from item in db.DashboardItem
+                            join filter in db.DashbordFilter on item.Id equals filter.DashboardItemId into filters
+                            where filters.Count() == 0
+                            select item;
+
+                    q.Delete();
+
+                    db.WeatherStation
+                        .Where(s => s.Id.Equals(id))
+                        .Delete();
+
+                    db.CommitTransaction();
+                }
+                catch(Exception ex)
+                {
+                    db.RollbackTransaction();
+                    throw ex;
+                }
 
                 return Ok();
             }
