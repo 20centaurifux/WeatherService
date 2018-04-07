@@ -58,30 +58,37 @@
             var el = $(this);
             var lastSync = parseInt(el.attr('data-widget-last-sync'), 10);
 
-            if (!lastSync || now - lastSync >= 180)
+            if (!lastSync || now - lastSync >= 120)
             {
-                el.attr('data-widget-last-sync', now);
+                el.html('<img src="/assets/rings.svg" style="position:absolute; margin:auto; top:0; left:0; right:0; bottom:0;">');
 
-                var url = el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations') + '&t=' + new Date().getTime();
-
-                $.get(url).done(function(html)
+                setTimeout(() =>
                 {
-                    var content = $(html +
-                      '<div class="dashboard-action"><h1 class="dashboard-action">Edit</h1>' +
-                      '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle dashboard-action" aria-hidden="true"></i></a>' +
-                      '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit dashboard-action" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
-                    .appendTo(el);
+                    el.attr('data-widget-last-sync', now);
 
-                    el.unbind('mouseenter').unbind('mouseleave');
+                    var url = el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations') + '&t=' + new Date().getTime();
 
-                    el.bind('mouseenter', () => { el.find('div.dashboard-action').show() });
-                    el.bind('mouseleave', () => { el.find('div.dashboard-action').hide() });
-
-                    content.find('a:eq(0)').bind('click', () =>
+                    $.get(url).done(function(html)
                     {
-                        gridster.remove_widget(el.get(0), storeWidgets);
+                        el.html('');
+
+                        var content = $(html +
+                          '<div class="dashboard-action"><h1 class="dashboard-action">Edit</h1>' +
+                          '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle dashboard-action" aria-hidden="true"></i></a>' +
+                          '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit dashboard-action" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
+                        .appendTo(el);
+
+                        el.unbind('mouseenter').unbind('mouseleave');
+
+                        el.bind('mouseenter', () => { el.find('div.dashboard-action').show() });
+                        el.bind('mouseleave', () => { el.find('div.dashboard-action').hide() });
+
+                        content.find('a:eq(0)').bind('click', () =>
+                        {
+                            gridster.remove_widget(el.get(0), storeWidgets);
+                        });
                     });
-                });
+                }, Math.floor(Math.random() * 1800) + 500);
             }
         });
     }
