@@ -4,14 +4,15 @@
     var guid = Guid.NewGuid().ToString();
 }
 
-<p id="@guid" style="font-size:small; font-weight:bold; margin:2px; color:white;">
+<div id="@guid" style="font-size:x-small; font-weight:bold; width:100%; position:absolute; left:0px; bottom:0px; color:white; background-color:black;">
     @Model.StationName
-</p>
+</div>
 
 <script type="text/javascript">
     $('#@guid').parent().css(
-        {
-            "background": "url('@Model.Value')",
-            "background-size": "cover"
-        });
+    {
+        "background": "url('@Model.Value')",
+        "background-size": "cover",
+        "backgriznd-color": "black"
+    });
 </script>

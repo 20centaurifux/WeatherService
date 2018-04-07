@@ -72,6 +72,6 @@
     "RequiresWebcamUrl": true,
     "Width": 2,
     "Height": 2,
-    "Background": "white"
+    "Background": "black"
   }
 ]
