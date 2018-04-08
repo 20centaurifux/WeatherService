@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace WeatherService.Models.View
 {
+    [Serializable]
     public class DashboardItemUpdate
     {
         public string WidgetId { get; set; }

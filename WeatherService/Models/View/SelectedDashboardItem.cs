@@ -18,6 +18,17 @@ namespace WeatherService.Models.View
             };
         }
 
+        public static SelectedDashboardItem Build(DashboardItemUpdate item, Widget widget)
+        {
+            return new SelectedDashboardItem()
+            {
+                Widget = widget,
+                X = item.X,
+                Y = item.Y,
+                Stations = item.Filter
+            };
+        }
+
         public Widget Widget { get; set; }
 
         public int X { get; set; }

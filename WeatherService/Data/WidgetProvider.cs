@@ -78,8 +78,16 @@ namespace WeatherService.Data
 
         public bool ValidateStationIds(Widget widget, IEnumerable<string> stationIds)
         {
-            var supportedStations = GetSupportedStations(widget);
+            return ValidateStationIds(widget, GetSupportedStations(widget), stationIds);
+        }
 
+        public bool ValidatePublicStationIds(Widget widget, IEnumerable<string> stationIds)
+        {
+            return ValidateStationIds(widget, GetSupportedPublicStations(widget), stationIds);
+        }
+
+        public bool ValidateStationIds(Widget widget, IEnumerable<WeatherStation> supportedStations, IEnumerable<string> stationIds)
+        {
             foreach(var idToCheck in stationIds)
             {
                 var station = supportedStations.FirstOrDefault(s => s.Id.Equals(idToCheck));

@@ -6,7 +6,8 @@
     ViewBag.Title = "Home";
 
     <style>
-        .bg {
+        .bg
+        {
             position: fixed;
             top: 0;
             right: 0;
@@ -85,7 +86,6 @@
         </div>
     </template>
 
-
     <template id="addWidgetButton" inline-template>
         <button v-if="stations.length>0" type="button" class="btn btn-primary" @@click="addWidget()">Add widget</button>
         <button v-else type="button" class="btn btn-primary" disabled>Add widget</button>
@@ -133,25 +133,19 @@
             {
                 $('#widget-edit-dialog').modal('show');
                 pageApp.$emit('edit-widget-dialog-opened', sender, guid, stations);
+            },
+            onSave: (items) =>
+            {
+                $.ajax(
+                {
+                    url: '/Home/UpdateDashboard',
+                    type: 'POST',
+                    data: JSON.stringify(items),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                }).fail(function(xhr, textStatus, errorThrown) { console.warn(xhr.responseText); });
             }
         };
-
-        @if(User.Identity.IsAuthenticated)
-        {
-        <text>
-        options.onSave = (items) =>
-        {
-            $.ajax(
-            {
-                url: '/Home/UpdateDashboard',
-                type: 'POST',
-                data: JSON.stringify(items),
-                dataType: 'json',
-                contentType: 'application/json'
-            }).fail(function(xhr, textStatus, errorThrown) { console.warn(xhr.responseText); });
-        }
-        </text>
-        }
 
         var dashboard = new Dashboard(options);
 

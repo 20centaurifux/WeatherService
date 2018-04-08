@@ -8,6 +8,7 @@ using WeatherService.Models;
 using WeatherService.Data;
 using WeatherService.Security.ApiAuthentication;
 using IniParser;
+using System;
 
 namespace WeatherService
 {
@@ -34,6 +35,13 @@ namespace WeatherService
             {
                 options.MaxModelValidationErrors = 1;
                 options.Filters.Add(new Security.Filters.Widget());
+            });
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(360);
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -71,6 +79,7 @@ namespace WeatherService
             app.UseAuthentication();
             app.UseApiAuthentication(ApiOptions.FromConfig(config["API"]));
             app.UseStatusCodePagesWithReExecute("/Error", "?statusCode={0}");
+            app.UseSession();
             app.UseMvcWithDefaultRoute();
         }
     }

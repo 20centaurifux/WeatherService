@@ -9,6 +9,8 @@ using LinqToDB;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.View;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace WeatherService.Controllers
 {
@@ -32,9 +34,9 @@ namespace WeatherService.Controllers
                 SupportedStations = new Dictionary<System.Guid, IEnumerable<PublicStationData>>()
             };
 
-            foreach(var widget in m.AvailableWidgets)
+            foreach (var widget in m.AvailableWidgets)
             {
-                if(User.Identity.IsAuthenticated)
+                if (User.Identity.IsAuthenticated)
                 {
                     m.SupportedStations.Add(widget.Guid, _widgetProvider.GetSupportedStations(widget).Select(s => s.ToPublicStationData()));
                 }
@@ -44,42 +46,97 @@ namespace WeatherService.Controllers
                 }
             }
 
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = _userManager.GetUserAsync(User).Result;
+            IEnumerable<DashboardItem> dashboardItems;
+            
 
-                using (var db = new WeatherDb())
+            using (var db = new WeatherDb())
+            {
+                if (User.Identity.IsAuthenticated)
                 {
-                    var dashboardItems = db.DashboardItem.Where(item => item.UserId.Equals(user.Id)).ToArray();
-                    var selectedItems = new List<SelectedDashboardItem>();
-
-                    foreach(var dashboardItem in dashboardItems)
-                    {
-                        var widget = m.AvailableWidgets.FirstOrDefault(w => w.Guid.Equals(new Guid(dashboardItem.WidgetId)));
-
-                        if (widget != null)
-                        {
-                            if (_widgetProvider.ValidateStationIds(widget, dashboardItem.Filters.Select(f => f.StationId)))
-                            {
-                                selectedItems.Add(SelectedDashboardItem.Build(dashboardItem, widget));
-                            }
-                        }
-                    }
-
-                    m.Items = selectedItems;
+                    LoadDashboardFromDatabase(db, ref m);
                 }
-            }
-            else
-            {
-                m.Items = new SelectedDashboardItem[] { };
+                else
+                {
+                    LoadDashboardFromSession(ref m);
+                }
             }
 
             return View(m);
         }
 
+        private void LoadDashboardFromDatabase(WeatherDb db, ref Dashboard dashboard)
+        {
+            var selectedItems = new List<SelectedDashboardItem>();
+
+            var user = _userManager.GetUserAsync(User).Result;
+            var dashboardItems = db.DashboardItem.Where(item => item.UserId.Equals(user.Id));
+
+            foreach (var dashboardItem in dashboardItems)
+            {
+                var widget = dashboard.AvailableWidgets.FirstOrDefault(w => w.Guid.Equals(new Guid(dashboardItem.WidgetId)));
+
+                if (widget != null)
+                {
+                    if (_widgetProvider.ValidateStationIds(widget, dashboardItem.Filters.Select(f => f.StationId)))
+                    {
+                        selectedItems.Add(SelectedDashboardItem.Build(dashboardItem, widget));
+                    }
+                }
+            }
+
+            dashboard.Items = selectedItems;
+        }
+
+        private void LoadDashboardFromSession(ref Dashboard dashboard)
+        {
+            var selectedItems = new List<SelectedDashboardItem>();
+
+            if (HttpContext.Session.TryGetValue("Dashboard", out byte[] bytes))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    var formatter = new BinaryFormatter();
+
+                    ms.Write(bytes, 0, bytes.Length);
+                    ms.Seek(0, SeekOrigin.Begin);
+
+                    var items = (IEnumerable<DashboardItemUpdate>)formatter.Deserialize(ms);
+
+                    foreach (var item in items)
+                    {
+                        var widget = dashboard.AvailableWidgets.FirstOrDefault(w => w.Guid.Equals(new Guid(item.WidgetId)));
+
+                        if (widget != null)
+                        {
+                            if (_widgetProvider.ValidatePublicStationIds(widget, item.Filter))
+                            {
+                                selectedItems.Add(SelectedDashboardItem.Build(item, widget));
+                            }
+                        }
+                    }
+                }
+            }
+
+            dashboard.Items = selectedItems;
+        }
+
         [HttpPost]
-        [Authorize]
+        [AllowAnonymous]
         public IActionResult UpdateDashboard([FromBody] IEnumerable<DashboardItemUpdate> items)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                StoreDashboardInDatabase(items);
+            }
+            else
+            {
+                StoreDashboardInSession(items);
+            }
+
+            return Ok();
+        }
+
+        private void StoreDashboardInDatabase(IEnumerable<DashboardItemUpdate> items)
         {
             var user = _userManager.GetUserAsync(User).Result;
 
@@ -95,7 +152,7 @@ namespace WeatherService.Controllers
                     {
                         var widget = _widgetProvider.LoadWidget(new Guid(item.WidgetId));
 
-                        if(widget != null)
+                        if (widget != null)
                         {
                             if (_widgetProvider.ValidateStationIds(widget, item.Filter))
                             {
@@ -111,14 +168,24 @@ namespace WeatherService.Controllers
 
                     db.CommitTransaction();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     db.RollbackTransaction();
                     throw ex;
                 }
             }
+        }
 
-            return Ok();
+        private void StoreDashboardInSession(IEnumerable<DashboardItemUpdate> items)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                formatter.Serialize(ms, items);
+
+                HttpContext.Session.Set("Dashboard", ms.ToArray());
+            }
         }
     }
 }
