@@ -47,7 +47,7 @@
   {
     "Guid": "c21e0735-d07c-4977-8d4a-0dbf5d899e6a",
     "Name": "Weekly overview",
-    "Description": "Temperature, humidity & pressure of the current week.",
+    "Description": "Temperature, humidity & pressure of the last 7 days.",
     "Url": "Widgets/WeeklyOverview",
     "SupportsMultipleStations": false,
     "RequiresTemperature": true,

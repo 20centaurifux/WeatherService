@@ -74,14 +74,8 @@ namespace WeatherService.Controllers
 
             using (var db = new WeatherDb())
             {
-                var start = Utils.DateTimeConverter.BeginningOfDay(DateTime.UtcNow);
-
-                while(start.DayOfWeek != DayOfWeek.Sunday)
-                {
-                    start = start.AddDays(-1);
-                }
-
-                var end = Utils.DateTimeConverter.EndOfDay(start.AddDays(6));
+                var end = DateTime.UtcNow;
+                var start = Utils.DateTimeConverter.BeginningOfDay(end.AddDays(-6));
 
                 var m = new LogEntries()
                 {
