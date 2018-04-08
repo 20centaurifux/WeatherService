@@ -191,12 +191,10 @@
 
         Vue.component('widgetFactory',
         {
-            props:
+            props: ['widgets', 'stations'],
+            data: function()
             {
-                widgets: { type: Array },
-                stations: { type: Object },
-                selectedWidget: { type: Object, default() { return {} } },
-                selectedStations: { type: Array, default() { return [] }}
+                return { selectedWidget: {}, selectedStations: []  };
             },
             template: '#widgetFactory',
             created: function()
