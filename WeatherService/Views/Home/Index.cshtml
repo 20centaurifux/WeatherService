@@ -364,7 +364,7 @@
         <ul>
             @foreach (var item in Model.Items)
             {
-                <li style="background-color:@item.Widget.Background;" data-widget-stations="@String.Join(",", item.Stations)" data-widget-guid="@item.Widget.Guid" data-widget-url="@item.Widget.Url" data-widget-last-sync="0" data-sizex="@item.Widget.Width" data-sizey="@item.Widget.Height" data-col="@item.X" data-row="@item.Y"></li>
+                <li style="background-color:@item.Widget.Background;" data-widget-stations="@String.Join(",", item.Stations)" data-widget-guid="@item.Widget.Guid" data-widget-url="@item.Widget.Url" data-widget-last-sync="0" data-widget-timeout="@item.Widget.Timeout" data-sizex="@item.Widget.Width" data-sizey="@item.Widget.Height" data-col="@item.X" data-row="@item.Y"></li>
             }
         </ul>
     </div>

@@ -11,7 +11,7 @@ namespace WeatherService.Controllers
 {
     public class WidgetsController : Controller
     {
-        public static readonly int CURRENT_LOG_ENTRY_HOURS_FILTER = 5;
+        public static readonly int CURRENT_LOG_ENTRY_HOURS_FILTER = 12;
 
         [Security.Filters.Widget(Guid = "c72fe6ee-4f94-4732-be36-34b2a1f8f370")]
         public IActionResult Temperature()

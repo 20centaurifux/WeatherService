@@ -47,53 +47,50 @@
         {
             var el = $(this);
             var lastSync = parseInt(el.attr('data-widget-last-sync'), 10);
+            var timeout = parseInt(el.attr('data-widget-timeout'), 10);
 
-            if (!lastSync || now - lastSync >= 120)
+            if (!lastSync || now - lastSync >= timeout)
             {
                 el.html('<img src="/assets/rings.svg" style="position:absolute; margin:auto; top:0; left:0; right:0; bottom:0;">');
+                el.attr('data-widget-last-sync', now);
 
-                setTimeout(() =>
+                var url = el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations') + '&t=' + new Date().getTime();
+
+                $.get(url).done(function(html)
                 {
-                    el.attr('data-widget-last-sync', now);
+                    el.html('');
 
-                    var url = el.attr('data-widget-url') + '?s=' + el.attr('data-widget-stations') + '&t=' + new Date().getTime();
-
-                    $.get(url).done(function(html)
-                    {
-                        el.html('');
-
-                        var content = $(html +
-                          '<div class="dashboard-action"><h1 class="dashboard-action">Edit</h1>' +
-                          '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle dashboard-action" aria-hidden="true"></i></a>' +
-                          '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit dashboard-action" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
+                    var content = $(html +
+                        '<div class="dashboard-action"><h1 class="dashboard-action">Edit</h1>' +
+                        '<a class="dashboard-action" style="float:right;"><i class="fa fa-times-circle dashboard-action" aria-hidden="true"></i></a>' +
+                        '<a class="dashboard-action" style="float:right; padding-right:5px;"><i class="fa fa-edit dashboard-action" aria-hidden="true"></i></a><span style="clear:right;"></span></div>')
                         .appendTo(el);
 
-                        el.unbind('mouseenter').unbind('mouseleave');
+                    el.unbind('mouseenter').unbind('mouseleave');
 
-                        el.bind('mouseenter', () => { el.find('div.dashboard-action').show() });
-                        el.bind('mouseleave', () => { el.find('div.dashboard-action').hide() });
+                    el.bind('mouseenter', () => { el.find('div.dashboard-action').show() });
+                    el.bind('mouseleave', () => { el.find('div.dashboard-action').hide() });
 
-                        content.find('a:eq(0)').bind('click', () =>
-                        {
-                            gridster.remove_widget(el.get(0), storeWidgets);
-                        });
-
-                        if (options.onEdit)
-                        {
-                            content.find('a:eq(1)').bind('click', () =>
-                            {
-                                options.onEdit(el.get(0), el.attr('data-widget-guid'), el.attr('data-widget-stations').split(','));
-                            });
-                        }
+                    content.find('a:eq(0)').bind('click', () =>
+                    {
+                        gridster.remove_widget(el.get(0), storeWidgets);
                     });
-                }, Math.floor(Math.random() * 1800) + 500);
+
+                    if (options.onEdit)
+                    {
+                        content.find('a:eq(1)').bind('click', () =>
+                        {
+                            options.onEdit(el.get(0), el.attr('data-widget-guid'), el.attr('data-widget-stations').split(','));
+                        });
+                    }
+                });
             }
         });
     }
 
     var widgetToHtml = function (widget, stations)
     {
-        return '<li style="background-color:' + widget.background + ';" data-widget-stations="' + stations.join(',') + '" data-widget-guid="' + widget.guid + '" data-widget-url="' + widget.url + '" data-widget-last-sync="0"></li>';
+        return '<li style="background-color:' + widget.background + ';" data-widget-stations="' + stations.join(',') + '" data-widget-guid="' + widget.guid + '" data-widget-url="' + widget.url + '" data-widget-last-sync="0" data-widget-timeout="' + widget.timeout + '"></li>';
     }
 
     this.addWidget = function (widget, stations, position)

@@ -8,6 +8,7 @@ namespace WeatherService.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
+        public int Timeout { get; set; }
         public bool SupportsMultipleStations{ get; set; }
         public bool RequiresTemperature { get; set; }
         public bool RequiresPressure { get; set; }
