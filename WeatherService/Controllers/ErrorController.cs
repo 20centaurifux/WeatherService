@@ -11,27 +11,34 @@ namespace WeatherService.Controllers
         {
             var m = new HttpError() { StatusCode = 200, Message = "I don't know what's going on." };
 
-            try
-            {
-                var msg = new HttpResponseMessage((HttpStatusCode)statusCode);
+            m.StatusCode = statusCode;
 
-                m.StatusCode = statusCode;
-                m.Message = msg.ReasonPhrase;
-            }
-            catch
+            if (statusCode == 1337)
             {
-                if (statusCode == 1337)
+                m.Message = "ph342 m9 1337 h4xX0r 5k!11Zz!!";
+            }
+            else if (statusCode == 23)
+            {
+                m.Message = "If you can't see the FNORD it can't eat you.";
+            }
+            else if (statusCode == 42)
+            {
+                m.Message = "Goodbye and thank you for the fish.";
+            }
+            else
+            {
+                try
                 {
-                    m.Message = "ph342 m9 1337 h4xX0r 5k!11Zz!!";
+                    var msg = new HttpResponseMessage((HttpStatusCode)statusCode);
+
+                    m.Message = msg.ReasonPhrase;
+
+                    if(!string.IsNullOrEmpty(msg.ReasonPhrase))
+                    {
+                        m.Message = msg.ReasonPhrase;
+                    }
                 }
-                else if (statusCode == 23)
-                {
-                    m.Message = "If you can't see the FNORD it can't eat you.";
-                }
-                else if (statusCode == 42)
-                {
-                    m.Message = "Goodbye and thank you for the fish.";
-                }
+                catch { }
             }
 
             return View("Error", m);
