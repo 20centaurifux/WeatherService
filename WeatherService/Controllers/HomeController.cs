@@ -46,19 +46,16 @@ namespace WeatherService.Controllers
                 }
             }
 
-            IEnumerable<DashboardItem> dashboardItems;
-            
-
-            using (var db = new WeatherDb())
+            if (User.Identity.IsAuthenticated)
             {
-                if (User.Identity.IsAuthenticated)
+                using (var db = new WeatherDb())
                 {
                     LoadDashboardFromDatabase(db, ref m);
                 }
-                else
-                {
-                    LoadDashboardFromSession(ref m);
-                }
+            }
+            else
+            {
+                LoadDashboardFromSession(ref m);
             }
 
             return View(m);

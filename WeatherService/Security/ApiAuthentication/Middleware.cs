@@ -49,7 +49,7 @@ namespace WeatherService.Security.ApiAuthentication
                     await _next(context);
                 }
             }
-            catch(Exception ex)
+            catch
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Bad Request");
