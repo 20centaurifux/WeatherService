@@ -5,7 +5,7 @@
 
     var storeWidgets = function()
     {
-        if (options.updateUrl)
+        if (options.onSave)
         {
             var items = [];
 
@@ -22,14 +22,7 @@
                 });
             });
 
-            $.ajax(
-            {
-                url: options.updateUrl,
-                type: 'POST',
-                data: JSON.stringify(items),
-                dataType: 'json',
-                contentType: 'application/json'
-            }).fail(function(xhr, textStatus, errorThrown) { console.warn(xhr.responseText); });
+            options.onSave(items);
         }
     }
 
@@ -41,10 +34,7 @@
         {
             stop: function(e, ui)
             {
-                if (options.updateUrl)
-                {
-                    setTimeout(storeWidgets, 0);
-                }
+                setTimeout(storeWidgets, 0);
             }
         }
     }).data('gridster');
@@ -87,6 +77,14 @@
                         {
                             gridster.remove_widget(el.get(0), storeWidgets);
                         });
+
+                        if (options.onEdit)
+                        {
+                            content.find('a:eq(1)').bind('click', () =>
+                            {
+                                options.onEdit(el.get(0), el.attr('data-widget-guid'), el.attr('data-widget-stations').split(','));
+                            });
+                        }
                     });
                 }, Math.floor(Math.random() * 1800) + 500);
             }
@@ -101,6 +99,13 @@
     this.addWidget = function (widget, stations, position)
     {
         gridster.add_widget(widgetToHtml(widget, stations), widget.width, widget.height);
+        this.refresh();
+        storeWidgets();
+    }
+
+    this.updateWidget = function (el, stations)
+    {
+        $(el).attr('data-widget-stations', stations.join(',')).attr('data-widget-last-sync', '0');
         this.refresh();
         storeWidgets();
     }

@@ -85,9 +85,35 @@
         </div>
     </template>
 
+
     <template id="addWidgetButton" inline-template>
         <button v-if="stations.length>0" type="button" class="btn btn-primary" @@click="addWidget()">Add widget</button>
         <button v-else type="button" class="btn btn-primary" disabled>Add widget</button>
+    </template>
+
+    <template id="updateWidgetButton" inline-template>
+        <button v-if="stations.length>0" type="button" class="btn btn-primary" @@click="updateWidget()">Save changes</button>
+        <button v-else type="button" class="btn btn-primary" disabled>Save changes</button>
+    </template>
+
+    <template id="widgetEditor" inline-template>
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Widget</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <widget-options :widget="selectedWidget" :stations="availableStations" :selection="selectedStations"></widget-options>
+                </div>
+                <div class="modal-footer">
+                    <update-widget-button :widget="selectedWidget" :stations="selectedStations" :requester="requester"></update-widget-button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </template>
 
     <environment names="Development">
@@ -101,19 +127,33 @@
     $(document).ready(function()
     {
         var pageApp = null;
+        var options =
+        {
+            onEdit: (sender, guid, stations) =>
+            {
+                $('#widget-edit-dialog').modal('show');
+                pageApp.$emit('edit-widget-dialog-opened', sender, guid, stations);
+            }
+        };
 
         @if(User.Identity.IsAuthenticated)
         {
         <text>
-        var dashboard = new Dashboard({ updateUrl: '/Home/UpdateDashboard' });
-        </text>
-        }
-        else
+        options.onSave = (items) =>
         {
-        <text>
-        var dashboard = new Dashboard();
+            $.ajax(
+            {
+                url: '/Home/UpdateDashboard',
+                type: 'POST',
+                data: JSON.stringify(items),
+                dataType: 'json',
+                contentType: 'application/json'
+            }).fail(function(xhr, textStatus, errorThrown) { console.warn(xhr.responseText); });
+        }
         </text>
         }
+
+        var dashboard = new Dashboard(options);
 
         dashboard.refresh();
 
@@ -121,7 +161,7 @@
             '    <button type="button" class="btn btn-primary">Add widget</button>' +
             '</li>')
             .appendTo('#action-buttons')
-            .click(function()
+            .click(() =>
             {
                 $('#widget-factory-dialog').modal('show');
                 pageApp.$emit('new-widget-dialog-opened');
@@ -189,6 +229,20 @@
             }
         });
 
+        Vue.component('updateWidgetButton',
+        {
+            props: ['widget', 'stations', 'requester'],
+            template: '#updateWidgetButton',
+            methods:
+            {
+                updateWidget()
+                {
+                    dashboard.updateWidget(this.requester, this.stations);
+                    $('#widget-edit-dialog').modal('hide');
+                }
+            }
+        });
+
         Vue.component('widgetFactory',
         {
             props: ['widgets', 'stations'],
@@ -201,7 +255,7 @@
             {
                 var self = this;
 
-                this.$parent.$on('new-widget-dialog-opened', function()
+                this.$parent.$on('new-widget-dialog-opened', () =>
                 {
                     self.selectDefault();
                 });
@@ -249,6 +303,42 @@
             }
         });
 
+        Vue.component('widgetEditor',
+        {
+            props: ['widgets', 'stations'],
+            data: function()
+            {
+                return { selectedWidget: {}, selectedStations: [], requester: null  };
+            },
+            template: '#widgetEditor',
+            created: function()
+            {
+                var self = this;
+
+                this.$parent.$on('edit-widget-dialog-opened', (sender, guid, stations) =>
+                {
+                    var widget = self.widgets.find(w => w.guid == guid);
+
+                    self.requester = sender;
+                    self.selectedWidget = widget;
+                    self.selectedStations.splice(0, self.selectedStations.length);
+                    stations.forEach(station => self.selectedStations.push(station));
+                });
+            },
+            computed:
+            {
+                availableStations()
+                {
+                    if (this.selectedWidget)
+                    {
+                        return this.stations[this.selectedWidget.guid];
+                    }
+
+                    return [];
+                }
+            },
+        });
+
         pageApp = new Vue(
         {
             el: '#page',
@@ -265,14 +355,16 @@
         <div id="widget-factory-dialog" class="modal" tabindex="-1" role="dialog">
             <widget-factory :widgets="availableWidgets" :stations="supportedStations"></widget-factory>
         </div>
+        <div id="widget-edit-dialog" class="modal" tabindex="-1" role="dialog">
+            <widget-editor :widgets="availableWidgets" :stations="supportedStations"></widget-editor>
+        </div>
     </div>
 
     <div class="gridster">
         <ul>
             @foreach (var item in Model.Items)
             {
-                <li style="background-color:@item.Widget.Background;" data-widget-stations="@String.Join(",", item.Stations)" data-widget-guid="@item.Widget.Guid" data-widget-url="@item.Widget.Url" data-widget-last-sync="0" data-sizex="@item.Widget.Width" data-sizey="@item.Widget.Height" data-col="@item.X" data-row="@item.Y">
-                </li>
+                <li style="background-color:@item.Widget.Background;" data-widget-stations="@String.Join(",", item.Stations)" data-widget-guid="@item.Widget.Guid" data-widget-url="@item.Widget.Url" data-widget-last-sync="0" data-sizex="@item.Widget.Width" data-sizey="@item.Widget.Height" data-col="@item.X" data-row="@item.Y"></li>
             }
         </ul>
     </div>
