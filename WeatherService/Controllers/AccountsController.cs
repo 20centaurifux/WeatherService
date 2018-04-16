@@ -40,6 +40,11 @@ namespace WeatherService.Controllers
                 return Forbid();
             }
 
+            if (user.UserName.Equals("Admin"))
+            {
+                return Forbid();
+            }
+
             var result = _userManager.DeleteAsync(user).Result;
 
             if (result.Succeeded)
@@ -120,29 +125,33 @@ namespace WeatherService.Controllers
 
                         if (result.Succeeded)
                         {
-                            user.UserName = m.Username;
                             user.Email = m.Email;
 
-                            result = _userManager.UpdateAsync(user).Result;
-
-                            if (result.Succeeded)
+                            if (!user.UserName.Equals("Admin"))
                             {
-                                if (m.IsAdmin && !_userManager.IsInRoleAsync(user, "Administrator").Result)
-                                {
-                                    result = _userManager.RemoveFromRoleAsync(user, "Reader").Result;
+                                user.UserName = m.Username;
 
-                                    if (result.Succeeded)
+                                result = _userManager.UpdateAsync(user).Result;
+
+                                if (result.Succeeded)
+                                {
+                                    if (m.IsAdmin && !_userManager.IsInRoleAsync(user, "Administrator").Result)
                                     {
-                                        result = _userManager.AddToRoleAsync(user, "Administrator").Result;
+                                        result = _userManager.RemoveFromRoleAsync(user, "Reader").Result;
+
+                                        if (result.Succeeded)
+                                        {
+                                            result = _userManager.AddToRoleAsync(user, "Administrator").Result;
+                                        }
                                     }
-                                }
-                                else if (!m.IsAdmin && _userManager.IsInRoleAsync(user, "Administrator").Result)
-                                {
-                                    result = _userManager.RemoveFromRoleAsync(user, "Administrator").Result;
-
-                                    if (result.Succeeded)
+                                    else if (!m.IsAdmin && _userManager.IsInRoleAsync(user, "Administrator").Result)
                                     {
-                                        result = _userManager.AddToRoleAsync(user, "Reader").Result;
+                                        result = _userManager.RemoveFromRoleAsync(user, "Administrator").Result;
+
+                                        if (result.Succeeded)
+                                        {
+                                            result = _userManager.AddToRoleAsync(user, "Reader").Result;
+                                        }
                                     }
                                 }
                             }

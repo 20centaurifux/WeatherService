@@ -51,7 +51,7 @@
             Vue.component('removeUserButton',
             {
 	            props: ['user'],
-	            template: '<button class="btn btn-danger" @@click="removeUser()">Remove</button>',
+	            template: '<button v-if="user.username != \'Admin\'" class="btn btn-danger" @@click="removeUser()">Remove</button>',
 	            methods:
 	            {
 		            removeUser: function()
