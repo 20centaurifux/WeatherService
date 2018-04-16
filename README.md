@@ -112,4 +112,29 @@ Move the mouse cursor over a widget if you want to delete it or change the data 
 
 # REST Interface
 
-TODO :)
+To send your measurements post a JSON array to */api/WeaterLog/{guid}*. The example below describes the format:
+
+```
+[{ timestamp: 1523899859, // UNIX timestamp (UTC)
+   temperature: 23.5,
+   pressure: 998,
+   humidity: 55,
+   uv: 0.31
+ }]
+```
+
+## Authentication
+
+The client has to send the following HTTP headers for authentication:
+
+* **X-WeatherStation-SenderId** GUID of the station
+* **X-WeatherStation-Timestamp** current UNIX timestamp (UTC)
+* **X-WeatherStation-HMAC** lower case hexadecimal checksum of the timestamp
+
+The timestamp is hashed with HMAC-SHA1:
+
+```  
+HMAC_SHA1($timestamp, $secret)
+```
+
+You find an example in the [authentication middleware](https://github.com/20centaurifux/WeatherService/blob/master/WeatherService/Security/ApiAuthentication/Middleware.cs#L89).
