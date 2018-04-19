@@ -86,14 +86,17 @@ namespace WeatherService.Security.ApiAuthentication
                 {
                     var station = db.WeatherStation.First(s => s.Id.Equals(data.StationId));
 
-                    var secret = Encoding.ASCII.GetBytes(station.Secret);
-                    var hmac = new HMACSHA1(secret);
-                    var timestampBytes = Encoding.ASCII.GetBytes(data.Timestamp.ToString());
+                    if (!String.IsNullOrEmpty(station.Secret))
+                    {
+                        var secret = Encoding.ASCII.GetBytes(station.Secret);
+                        var hmac = new HMACSHA1(secret);
+                        var timestampBytes = Encoding.ASCII.GetBytes(data.Timestamp.ToString());
 
-                    var hashBytes = hmac.ComputeHash(timestampBytes);
-                    var hashString = ToHexString(hashBytes);
+                        var hashBytes = hmac.ComputeHash(timestampBytes);
+                        var hashString = ToHexString(hashBytes);
 
-                    success = hashString.Equals(data.HMAC);
+                        success = hashString.Equals(data.HMAC);
+                    }
                 }
             }
 
