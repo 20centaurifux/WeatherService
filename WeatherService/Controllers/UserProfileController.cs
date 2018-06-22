@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using WeatherService.Data;
 using WeatherService.Models;
@@ -11,12 +10,9 @@ namespace WeatherService.Controllers
 {
     public class UserProfileController : Controller
     {
-        UserManager<User> _userManager;
+        readonly UserManager<User> _userManager;
 
-        public UserProfileController(UserManager<User> userManager)
-        {
-            _userManager = userManager;
-        }
+        public UserProfileController(UserManager<User> userManager) => _userManager = userManager;
 
         [HttpGet]
         [Authorize]
@@ -24,7 +20,7 @@ namespace WeatherService.Controllers
         {
             using (var db = new WeatherDb())
             {
-                var user = db.User.First(u => u.UserName.ToLower().Equals(User.Identity.Name.ToLower()));
+                var user = db.User.First(u => u.UserName.EqualsICase(User.Identity.Name));
 
                 return View(Models.User.ToViewModel(user));
             }
@@ -38,7 +34,7 @@ namespace WeatherService.Controllers
             {
                 using (var db = new WeatherDb())
                 {
-                    if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
+                    if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.EqualsICase(m.Email) && !u.Id.Equals(m.Id)))
                     {
                         ViewData["ValidationError"] = "The email address is already assigned.";
                     }

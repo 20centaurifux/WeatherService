@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WeatherService.Data;
 using WeatherService.Models;
 using LinqToDB;
@@ -52,7 +52,7 @@ namespace WeatherService.Controllers
 
                     try
                     {
-                        if (db.WeatherStation.Any(s => s.Name.ToLower().Equals(m.Name.ToLower()) && !s.Id.Equals(m.Id)))
+                        if (db.WeatherStation.Any(s => s.Name.EqualsICase(m.Name) && !s.Id.Equals(m.Id)))
                         {
                             ViewData["ValidationError"] = "A weather station with the given name does already exist.";
                         }
@@ -98,7 +98,7 @@ namespace WeatherService.Controllers
 
                     try
                     {
-                        if(db.WeatherStation.Any(s => s.Name.ToLower().Equals(m.Name.ToLower())))
+                        if(db.WeatherStation.Any(s => s.Name.EqualsICase(m.Name)))
                         {
                             ViewData["ValidationError"] = "A weather station with the given name does already exist.";
                         }

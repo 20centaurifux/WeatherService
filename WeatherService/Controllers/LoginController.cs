@@ -8,12 +8,9 @@ namespace WeatherService.Controllers
 {
     public class LoginController : Controller
     {
-        SignInManager<User> _signInManager;
+        readonly SignInManager<User> _signInManager;
 
-        public LoginController(SignInManager<User> signInManager)
-        {
-            _signInManager = signInManager;
-        }
+        public LoginController(SignInManager<User> signInManager) => _signInManager = signInManager;
 
         [HttpGet]
         [AllowAnonymous]

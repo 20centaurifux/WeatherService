@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
 using WeatherService.Models.View;
 
 namespace WeatherService.Controllers
@@ -13,15 +13,15 @@ namespace WeatherService.Controllers
 
             m.StatusCode = statusCode;
 
-            if (statusCode == 1337)
+            if (statusCode == 0x539)
             {
                 m.Message = "ph342 m9 1337 h4xX0r 5k!11Zz!!";
             }
-            else if (statusCode == 23)
+            else if (statusCode == 0x17)
             {
                 m.Message = "If you can't see the FNORD it can't eat you.";
             }
-            else if (statusCode == 42)
+            else if (statusCode == 0x2A)
             {
                 m.Message = "Goodbye and thank you for the fish.";
             }
@@ -33,7 +33,7 @@ namespace WeatherService.Controllers
 
                     m.Message = msg.ReasonPhrase;
 
-                    if(!string.IsNullOrEmpty(msg.ReasonPhrase))
+                    if (!string.IsNullOrEmpty(msg.ReasonPhrase))
                     {
                         m.Message = msg.ReasonPhrase;
                     }

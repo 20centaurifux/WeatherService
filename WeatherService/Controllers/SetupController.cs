@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using WeatherService.Data;
 using WeatherService.Models;
 using LinqToDB;
-using Microsoft.AspNetCore.Authorization;
 
 namespace WeatherService.Controllers
 {
     public class SetupController : Controller
     {
-        RoleManager<UserRole> _roleManager;
-        UserManager<User> _userManager;
+        readonly RoleManager<UserRole> _roleManager;
+        readonly UserManager<User> _userManager;
 
         public SetupController(RoleManager<UserRole> roleManager, UserManager<User> userManager)
         {
@@ -73,7 +73,7 @@ namespace WeatherService.Controllers
             return Content(message);
         }
 
-        private IdentityResult CreateDefaultRoles()
+        IdentityResult CreateDefaultRoles()
         {
             IdentityResult result = null;
 
@@ -90,14 +90,14 @@ namespace WeatherService.Controllers
             return result;
         }
 
-        private IdentityResult CreateAdminUser(string password)
+        IdentityResult CreateAdminUser(string password)
         {
             var adminRole = _roleManager.FindByNameAsync("Adminstrator").Result;
 
             return _userManager.CreateAsync(new Models.User() { UserName = "Admin" }, password).Result;
         }
 
-        private static string ErrorMessageFromResult(IdentityResult result)
+        static string ErrorMessageFromResult(IdentityResult result)
         {
             var message = "Couldn't upgrade database.";
 

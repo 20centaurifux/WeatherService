@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using LinqToDB;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.View;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 
 namespace WeatherService.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly WidgetProvider _widgetProvider;
-        private readonly UserManager<User> _userManager;
+        readonly WidgetProvider _widgetProvider;
+        readonly UserManager<User> _userManager;
 
         public HomeController(WidgetProvider widgetProvider, UserManager<User> userManager)
         {
@@ -61,10 +61,9 @@ namespace WeatherService.Controllers
             return View(m);
         }
 
-        private void LoadDashboardFromDatabase(WeatherDb db, ref Dashboard dashboard)
+        void LoadDashboardFromDatabase(WeatherDb db, ref Dashboard dashboard)
         {
             var selectedItems = new List<SelectedDashboardItem>();
-
             var user = _userManager.GetUserAsync(User).Result;
             var dashboardItems = db.DashboardItem.Where(item => item.UserId.Equals(user.Id));
 
@@ -84,7 +83,7 @@ namespace WeatherService.Controllers
             dashboard.Items = selectedItems;
         }
 
-        private void LoadDashboardFromSession(ref Dashboard dashboard)
+        void LoadDashboardFromSession(ref Dashboard dashboard)
         {
             var selectedItems = new List<SelectedDashboardItem>();
 
@@ -133,7 +132,7 @@ namespace WeatherService.Controllers
             return Ok();
         }
 
-        private void StoreDashboardInDatabase(IEnumerable<DashboardItemUpdate> items)
+        void StoreDashboardInDatabase(IEnumerable<DashboardItemUpdate> items)
         {
             var user = _userManager.GetUserAsync(User).Result;
 
@@ -173,7 +172,7 @@ namespace WeatherService.Controllers
             }
         }
 
-        private void StoreDashboardInSession(IEnumerable<DashboardItemUpdate> items)
+        void StoreDashboardInSession(IEnumerable<DashboardItemUpdate> items)
         {
             BinaryFormatter formatter = new BinaryFormatter();
 

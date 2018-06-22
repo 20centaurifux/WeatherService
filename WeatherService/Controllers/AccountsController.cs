@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Linq;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.View;
@@ -12,12 +12,9 @@ namespace WeatherService.Controllers
 {
     public class AccountsController : Controller
     {
-        UserManager<User> _userManager;
+        readonly UserManager<User> _userManager;
 
-        public AccountsController(UserManager<User> userManager)
-        {
-            _userManager = userManager;
-        }
+        public AccountsController(UserManager<User> userManager) => _userManager = userManager;
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
@@ -35,12 +32,12 @@ namespace WeatherService.Controllers
         {
             var user = _userManager.FindByIdAsync(id).Result;
 
-            if(user.UserName.ToLower().Equals(User.Identity.Name.ToLower()))
+            if(user.UserName.EqualsICase(User.Identity.Name))
             {
                 return Forbid();
             }
 
-            if (user.UserName.Equals("Admin"))
+            if (user.UserName.EqualsICase("Admin"))
             {
                 return Forbid();
             }
@@ -100,11 +97,11 @@ namespace WeatherService.Controllers
             {
                 using (var db = new WeatherDb())
                 {
-                    if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower()) && !u.Id.Equals(m.Id)))
+                    if (db.User.Any(u => u.UserName.EqualsICase(m.Username) && !u.Id.Equals(m.Id)))
                     {
                         ViewData["ValidationError"] = "A user with the given name does already exist.";
                     }
-                    else if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
+                    else if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.EqualsICase(m.Email) && !u.Id.Equals(m.Id)))
                     {
                         ViewData["ValidationError"] = "The email address is already assigned.";
                     }
@@ -182,10 +179,7 @@ namespace WeatherService.Controllers
 
         [HttpGet("Accounts/Create")]
         [Authorize(Roles = "Administrator")]
-        public IActionResult Create()
-        {
-            return View("CreateAccount", new UserProfile() { Username = "JohnDoe", IsAdmin = false });
-        }
+        public IActionResult Create() => View("CreateAccount", new UserProfile() { Username = "JohnDoe", IsAdmin = false });
 
         [HttpPost("Accounts/Create")]
         [Authorize(Roles = "Administrator")]
@@ -195,11 +189,11 @@ namespace WeatherService.Controllers
             {
                 using (var db = new WeatherDb())
                 {
-                    if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower())))
+                    if (db.User.Any(u => u.UserName.EqualsICase(m.Username)))
                     {
                         ViewData["ValidationError"] = "A user with the given name does already exist.";
                     }
-                    else if (!string.IsNullOrEmpty(m.Email) && (db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()))))
+                    else if (!string.IsNullOrEmpty(m.Email) && (db.User.Any(u => u.Email != null && u.Email.EqualsICase(m.Email))))
                     {
                         ViewData["ValidationError"] = "The email address is already assigned.";
                     }
@@ -254,7 +248,7 @@ namespace WeatherService.Controllers
             return View("CreateAccount", m);
         }
 
-        private UserProfile ToUserProfile(User user)
+        UserProfile ToUserProfile(User user)
         {
             var p = Models.User.ToViewModel(user);
 

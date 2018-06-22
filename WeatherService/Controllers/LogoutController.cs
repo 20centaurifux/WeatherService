@@ -7,12 +7,9 @@ namespace WeatherService.Controllers
 {
     public class LogoutController : Controller
     {
-        SignInManager<User> _signInManager;
+        readonly SignInManager<User> _signInManager;
 
-        public LogoutController(SignInManager<User> signInManager)
-        {
-            _signInManager = signInManager;
-        }
+        public LogoutController(SignInManager<User> signInManager) => _signInManager = signInManager;
 
         [HttpGet]
         [AllowAnonymous]

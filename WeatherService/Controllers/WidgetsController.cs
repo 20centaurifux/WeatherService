@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using WeatherService.Data;
 using WeatherService.Models;
 using WeatherService.Models.Widgets;
 using WeatherService.Utils;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace WeatherService.Controllers
 {
@@ -99,7 +99,7 @@ namespace WeatherService.Controllers
             return View(m);
         }
 
-        private IEnumerable<WeatherStation> GetStations()
+        IEnumerable<WeatherStation> GetStations()
         {
             using (var db = new WeatherDb())
             {
@@ -110,12 +110,12 @@ namespace WeatherService.Controllers
             }
         }
 
-        private WeatherStation GetStation()
+        WeatherStation GetStation()
         {
             return GetStations().First();
         }
 
-        private LogEntry GetCurrentLogEntry(WeatherStation station)
+        LogEntry GetCurrentLogEntry(WeatherStation station)
         {
             using (var db = new WeatherDb())
             {
@@ -130,12 +130,12 @@ namespace WeatherService.Controllers
             return null;
         }
 
-        private static SingleStationValue<T> CreateSingleStationValue<T>(WeatherStation station)
+        static SingleStationValue<T> CreateSingleStationValue<T>(WeatherStation station)
         {
             return new SingleStationValue<T>() { StationName = station.Name, StationLocation = station.Location };
         }
 
-        private static SingleStationValue<T> CreateSingleStationValue<T>(WeatherStation station, DateTime lastUpdate, T value)
+        static SingleStationValue<T> CreateSingleStationValue<T>(WeatherStation station, DateTime lastUpdate, T value)
         {
             return new SingleStationValue<T>()
             {

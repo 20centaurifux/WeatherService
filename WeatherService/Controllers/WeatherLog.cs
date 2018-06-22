@@ -15,12 +15,9 @@ namespace WeatherService.Controllers
     [Route("api/WeatherLog/{id}")]
     public class WeatherLog : Controller
     {
-        private RequestData _apiAuthenticationData;
+        readonly RequestData _apiAuthenticationData;
 
-        public WeatherLog(RequestData apiAuthenticationData)
-        {
-            _apiAuthenticationData = apiAuthenticationData;
-        }
+        public WeatherLog(RequestData apiAuthenticationData) => _apiAuthenticationData = apiAuthenticationData;
 
         [AllowAnonymous]
         [HttpPost]
