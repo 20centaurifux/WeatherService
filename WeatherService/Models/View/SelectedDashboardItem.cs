@@ -5,8 +5,6 @@ namespace WeatherService.Models.View
 {
     public class SelectedDashboardItem
     {
-        public SelectedDashboardItem() { }
-
         public static SelectedDashboardItem Build(DashboardItem item, Widget widget)
         {
             return new SelectedDashboardItem()

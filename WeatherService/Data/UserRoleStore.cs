@@ -63,21 +63,21 @@ namespace WeatherService.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult<string>(role.NormalizedName);
+            return Task.FromResult(role.NormalizedName);
         }
 
         public Task<string> GetRoleIdAsync(T role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult<string>(role.Id);
+            return Task.FromResult(role.Id);
         }
 
         public Task<string> GetRoleNameAsync(T role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult<string>(role.Name);
+            return Task.FromResult(role.Name);
         }
 
         public Task SetNormalizedRoleNameAsync(T role, string normalizedName, CancellationToken cancellationToken)
@@ -113,14 +113,8 @@ namespace WeatherService.Data
             }
         }
 
-        private Task<IdentityResult> Success()
-        {
-            return Task.FromResult<IdentityResult>(IdentityResult.Success);
-        }
+        Task<IdentityResult> Success() => Task.FromResult<IdentityResult>(IdentityResult.Success);
 
-        private Task<IdentityResult> Fail()
-        {
-            return Task.FromResult<IdentityResult>(IdentityResult.Failed(null));
-        }
+        Task<IdentityResult> Fail() => Task.FromResult<IdentityResult>(IdentityResult.Failed(null));
     }
 }

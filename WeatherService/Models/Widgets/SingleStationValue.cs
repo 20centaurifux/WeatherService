@@ -2,7 +2,7 @@
 {
     public class SingleStationValue<T> : ASingleStation
     {
-        private T _value = default(T);
+        T _value = default(T);
 
         public T Value
         {

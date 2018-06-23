@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -10,14 +9,11 @@ namespace WeatherService.Data
 {
     public class WidgetProvider
     {
-        private readonly string _filename;
-        private IEnumerable<Widget> _widgets;
-        private IEnumerable<WeatherStation> _stations;
+        readonly string _filename;
+        IEnumerable<Widget> _widgets;
+        IEnumerable<WeatherStation> _stations;
 
-        public WidgetProvider(string filename)
-        {
-            _filename = filename;
-        }
+        public WidgetProvider(string filename) => _filename = filename;
 
         public IEnumerable<Widget> LoadWidgets()
         {
@@ -36,15 +32,9 @@ namespace WeatherService.Data
             return widgets.FirstOrDefault(w => w.Guid.Equals(guid));
         }
 
-        public IEnumerable<WeatherStation> GetSupportedStations(Widget widget)
-        {
-            return GetSupportedStations(widget, false);
-        }
+        public IEnumerable<WeatherStation> GetSupportedStations(Widget widget) => GetSupportedStations(widget, false);
 
-        public IEnumerable<WeatherStation> GetSupportedPublicStations(Widget widget)
-        {
-            return GetSupportedStations(widget, true);
-        }
+        public IEnumerable<WeatherStation> GetSupportedPublicStations(Widget widget) => GetSupportedStations(widget, true);
 
         public static bool WidgetCompatibleToStation(Widget widget, WeatherStation station)
         {
@@ -76,15 +66,9 @@ namespace WeatherService.Data
             return true;
         }
 
-        public bool ValidateStationIds(Widget widget, IEnumerable<string> stationIds)
-        {
-            return ValidateStationIds(widget, GetSupportedStations(widget), stationIds);
-        }
+        public bool ValidateStationIds(Widget widget, IEnumerable<string> stationIds) => ValidateStationIds(widget, GetSupportedStations(widget), stationIds);
 
-        public bool ValidatePublicStationIds(Widget widget, IEnumerable<string> stationIds)
-        {
-            return ValidateStationIds(widget, GetSupportedPublicStations(widget), stationIds);
-        }
+        public bool ValidatePublicStationIds(Widget widget, IEnumerable<string> stationIds) => ValidateStationIds(widget, GetSupportedPublicStations(widget), stationIds);
 
         public bool ValidateStationIds(Widget widget, IEnumerable<WeatherStation> supportedStations, IEnumerable<string> stationIds)
         {
@@ -106,7 +90,7 @@ namespace WeatherService.Data
             return true;
         }
 
-        private IEnumerable<WeatherStation> GetSupportedStations(Widget widget, bool publicOnly)
+        IEnumerable<WeatherStation> GetSupportedStations(Widget widget, bool publicOnly)
         {
             var stations = new List<WeatherStation>();
 
@@ -121,7 +105,7 @@ namespace WeatherService.Data
             return stations;
         }
 
-        private IEnumerable<WeatherStation> WeatherStations
+        IEnumerable<WeatherStation> WeatherStations
         {
             get
             {

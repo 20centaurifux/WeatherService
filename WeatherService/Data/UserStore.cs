@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using WeatherService.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Threading;
 using LinqToDB;
 
 namespace WeatherService.Data
@@ -64,21 +64,21 @@ namespace WeatherService.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult<string>(user.NormalizedUserName);
+            return Task.FromResult(user.NormalizedUserName);
         }
 
         public Task<string> GetUserIdAsync(T user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult<string>(user.Id);
+            return Task.FromResult(user.Id);
         }
 
         public Task<string> GetUserNameAsync(T user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult<string>(user.UserName);
+            return Task.FromResult(user.UserName);
         }
 
         public Task SetNormalizedUserNameAsync(T user, string normalizedName, CancellationToken cancellationToken)
@@ -114,15 +114,9 @@ namespace WeatherService.Data
             }
         }
 
-        private Task<IdentityResult> Success()
-        {
-            return Task.FromResult<IdentityResult>(IdentityResult.Success);
-        }
+        Task<IdentityResult> Success() => Task.FromResult<IdentityResult>(IdentityResult.Success);
 
-        private Task<IdentityResult> Fail()
-        {
-            return Task.FromResult<IdentityResult>(IdentityResult.Failed(null));
-        }
+        Task<IdentityResult> Fail() => Task.FromResult<IdentityResult>(IdentityResult.Failed(null));
 
         public Task SetPasswordHashAsync(T user, string passwordHash, CancellationToken cancellationToken)
         {

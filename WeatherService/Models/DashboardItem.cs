@@ -1,8 +1,7 @@
 ﻿using LinqToDB.Mapping;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using System.Linq;
-using WeatherService.Models.View;
+
 namespace WeatherService.Models
 {
     [Table(Name = "DashboardItem")]

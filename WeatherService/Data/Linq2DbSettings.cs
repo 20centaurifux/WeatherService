@@ -8,7 +8,7 @@ namespace WeatherService.Data
     {
         public static readonly string DEFAULT_CONFIGURATION = "WeatherService";
 
-        private readonly ConnectionStringSettings[] _settings;
+        readonly ConnectionStringSettings[] _settings;
 
         public Linq2Dbsettings(KeyDataCollection config)
         {

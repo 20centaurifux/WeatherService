@@ -7,10 +7,7 @@ namespace WeatherService.Models
     [Table(Name = "AspnetUser")]
     public class User : IdentityUser
     {
-        public User()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
+        public User() => Id = Guid.NewGuid().ToString();
 
         [Column(Name = "AccessFailedCount")]
         public override int AccessFailedCount { get => base.AccessFailedCount; set => base.AccessFailedCount = value; }
@@ -60,7 +57,12 @@ namespace WeatherService.Models
 
         public static View.UserProfile ToViewModel(User user)
         {
-            return new View.UserProfile() { Id = user.Id, Username = user.UserName, Email = user.Email };
+            return new View.UserProfile()
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email
+            };
         }
     }
 }

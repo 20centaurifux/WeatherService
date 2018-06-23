@@ -8,10 +8,7 @@ namespace WeatherService.Models
     [Table(Name = "WeatherStation")]
     public class WeatherStation
     {
-        public WeatherStation()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
+        public WeatherStation() => Id = Guid.NewGuid().ToString();
 
         [PrimaryKey]
         [StringLength(36)]

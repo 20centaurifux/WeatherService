@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WeatherService.Models.View
 {
     public class UserProfile
     {
-        public UserProfile()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
+        public UserProfile() => Id = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(36)]
@@ -28,7 +22,6 @@ namespace WeatherService.Models.View
         [StringLength(64)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
 
         [StringLength(64)]
         [DataType(DataType.Password)]

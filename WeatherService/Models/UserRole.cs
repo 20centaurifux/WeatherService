@@ -7,10 +7,7 @@ namespace WeatherService.Models
     [Table(Name = "AspnetRole")]
     public class UserRole : IdentityRole
     {
-        public UserRole()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
+        public UserRole() => Id = Guid.NewGuid().ToString();
 
         [Column(Name = "ConcurrencyStamp")]
         public override string ConcurrencyStamp { get => base.ConcurrencyStamp; set => base.ConcurrencyStamp = value; }
