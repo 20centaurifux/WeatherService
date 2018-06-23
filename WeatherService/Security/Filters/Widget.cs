@@ -2,16 +2,16 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
 using WeatherService.Data;
 using WeatherService.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WeatherService.Security.Filters
 {
     public class Widget : Attribute, IActionFilter
     {
-        private ActionExecutingContext _context;
-        private WidgetProvider _widgetProvider;
+        ActionExecutingContext _context;
+        WidgetProvider _widgetProvider;
 
         public string Guid { get; set; }
 
@@ -26,13 +26,13 @@ namespace WeatherService.Security.Filters
             }
         }
 
-        private void Prepare(ActionExecutingContext context)
+        void Prepare(ActionExecutingContext context)
         {
             _context = context;
             _widgetProvider = (WidgetProvider)_context.HttpContext.RequestServices.GetService(typeof(WidgetProvider));
         }
 
-        private void Process()
+        void Process()
         {
             var stationIds = GetRequestedStationIds();
 
@@ -63,12 +63,9 @@ namespace WeatherService.Security.Filters
             }
         }
 
-        private IEnumerable<string> GetRequestedStationIds()
-        {
-            return _context.HttpContext.Request.Query["s"].ToString().Split(",");
-        }
+        IEnumerable<string> GetRequestedStationIds() => _context.HttpContext.Request.Query["s"].ToString().Split(",");
 
-        private IEnumerable<WeatherStation> GetSupportedStations(Models.Widget widget)
+        IEnumerable<WeatherStation> GetSupportedStations(Models.Widget widget)
         {
             IEnumerable<WeatherStation> supportedStations;
 
@@ -84,14 +81,8 @@ namespace WeatherService.Security.Filters
             return supportedStations;
         }
 
-        private void BadRequest()
-        {
-            _context.Result = new BadRequestResult();
-        }
+        void BadRequest() => _context.Result = new BadRequestResult();
 
-        private void Forbid()
-        {
-            _context.Result = new ForbidResult();
-        }
+        void Forbid() => _context.Result = new ForbidResult();
     }
 }

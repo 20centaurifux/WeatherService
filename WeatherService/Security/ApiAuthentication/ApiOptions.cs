@@ -5,10 +5,7 @@ namespace WeatherService.Security.ApiAuthentication
 {
     public class ApiOptions
     {
-        public ApiOptions()
-        {
-            Timeout = 15;
-        }
+        public ApiOptions() => Timeout = 15;
 
         public static ApiOptions FromConfig(KeyDataCollection config)
         {

@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
-using WeatherService.Data;
 using Microsoft.Extensions.Options;
+using WeatherService.Data;
 
 namespace WeatherService.Security.ApiAuthentication
 {
     public class Middleware
     {
-        private readonly RequestDelegate _next;
-        private readonly ApiOptions _options;
+        readonly RequestDelegate _next;
+        readonly ApiOptions _options;
 
         public Middleware(RequestDelegate next, IOptions<ApiOptions> options)
         {
@@ -56,12 +56,9 @@ namespace WeatherService.Security.ApiAuthentication
             }
         }
 
-        private bool IsAPIPath(HttpContext context)
-        {
-            return context.Request.Path.ToString().ToLower().StartsWith("/api");
-        }
+        bool IsAPIPath(HttpContext context) => context.Request.Path.ToString().ToLower().StartsWith("/api");
 
-        private RequestData ExtractAuthenticationData(HttpContext context)
+        RequestData ExtractAuthenticationData(HttpContext context)
         {
             var headers = context.Request.Headers;
 
@@ -73,7 +70,7 @@ namespace WeatherService.Security.ApiAuthentication
             };
         }
 
-        private bool ValidateRequest(RequestData data)
+        bool ValidateRequest(RequestData data)
         {
             var requestTimestamp = Utils.DateTimeConverter.UnixTimestampToDateTime(data.Timestamp);
             var success = false;
@@ -93,7 +90,7 @@ namespace WeatherService.Security.ApiAuthentication
                         var timestampBytes = Encoding.ASCII.GetBytes(data.Timestamp.ToString());
 
                         var hashBytes = hmac.ComputeHash(timestampBytes);
-                        var hashString = ToHexString(hashBytes);
+                        var hashString = hashBytes.ToHexString();
 
                         success = hashString.Equals(data.HMAC);
                     }
@@ -101,17 +98,6 @@ namespace WeatherService.Security.ApiAuthentication
             }
 
             return success;
-        }
-
-        private static string ToHexString(byte[] array)
-        {
-            StringBuilder hex = new StringBuilder(array.Length * 2);
-
-            foreach (var b in array)
-            {
-                hex.AppendFormat("{0:x2}", b);
-            }
-            return hex.ToString();
         }
     }
 }
