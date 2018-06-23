@@ -8,37 +8,19 @@ namespace WeatherService.Utils
         public static readonly string CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         public static readonly string NUMBERS = "0123456789";
 
-        private Random _rnd = new Random();
+        Random _rnd = new Random();
 
-        public RandomGenerator()
-        {
-            _rnd = new Random();
-        }
+        public RandomGenerator() => _rnd = new Random();
 
-        public string Generate(string characters, int length)
-        {
-            return new String(characters.Select(c => characters[_rnd.Next(characters.Length)]).Take(length).ToArray());
-        }
+        public string Generate(string characters, int length) => new String(characters.Select(c => characters[_rnd.Next(characters.Length)]).Take(length).ToArray());
 
-        public string GenerateAlphabetic()
-        {
-            return GenerateAlphabetic(_rnd.Next(8));
-        }
+        public string GenerateAlphabetic() => GenerateAlphabetic(_rnd.Next(9));
 
-        public string GenerateAlphabetic(int length)
-        {
-            return Generate(CHARS, length);
-        }
+        public string GenerateAlphabetic(int length) => Generate(CHARS, length);
 
-        public string GenerateAlphanumeric(int length)
-        {
-            return Generate(CHARS + NUMBERS, length);
-        }
+        public string GenerateAlphanumeric(int length) => Generate(CHARS + NUMBERS, length);
 
-        public string GenerateAlphanumeric()
-        {
-            return GenerateAlphanumeric(_rnd.Next(8));
-        }
+        public string GenerateAlphanumeric() => GenerateAlphanumeric(_rnd.Next(9));
 
         public string AppendParameterToUrl(string url)
         {

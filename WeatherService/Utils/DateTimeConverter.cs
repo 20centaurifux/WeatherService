@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace WeatherService.Utils
 {
-    public abstract class DateTimeConverter
+    public static class DateTimeConverter
     {
         public static DateTime UnixTimestampToDateTime(long unixTimeStamp)
         {
@@ -29,14 +29,8 @@ namespace WeatherService.Utils
             return success;
         }
 
-        public static DateTime BeginningOfDay(DateTime dt)
-        {
-            return new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, 0);
-        }
+        public static DateTime BeginningOfDay(DateTime dt) => new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, 0);
 
-        public static DateTime EndOfDay(DateTime dt)
-        {
-            return new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59, 999);
-        }
+        public static DateTime EndOfDay(DateTime dt) => new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59, 999);
     }
 }
