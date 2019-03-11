@@ -20,7 +20,7 @@ namespace WeatherService.Controllers
         {
             using (var db = new WeatherDb())
             {
-                var user = db.User.First(u => u.UserName.EqualsICase(User.Identity.Name));
+                var user = db.User.First(u => u.UserName.ToLower().Equals(User.Identity.Name.ToLower()));
 
                 return View(Models.User.ToViewModel(user));
             }
@@ -34,7 +34,7 @@ namespace WeatherService.Controllers
             {
                 using (var db = new WeatherDb())
                 {
-                    if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.EqualsICase(m.Email) && !u.Id.Equals(m.Id)))
+                    if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
                     {
                         ViewData["ValidationError"] = "The email address is already assigned.";
                     }

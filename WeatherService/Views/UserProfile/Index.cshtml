@@ -13,7 +13,6 @@
     <form id="profileForm" action="/UserProfile" method="post">
         @Html.HiddenFor(m => m.Id)
         @Html.HiddenFor(m => m.Username)
-
         <div class="form-group row">
             <label asp-for="Name" class="col-2 col-form-label">Email</label>
             <div class="col-10">
@@ -21,14 +20,12 @@
                 @Html.ValidationMessageFor(m => m.Email, string.Empty, new { @class = "text-danger" })
             </div>
         </div>
-
         <div class="form-group row">
             <label asp-for="Password" class="col-2 col-form-label">Password</label>
             <div class="col-10">
                 <input id="password" type="password" class="form-control" name="Password" />
             </div>
         </div>
-
         <div class="form-group row">
             <label asp-for="Password2" class="col-2 col-form-label">Repeat password</label>
             <div class="col-10">
@@ -36,6 +33,15 @@
                 <span class="field-validation-valid text-danger" data-valmsg-for="Password2" data-valmsg-replace="true"></span>
             </div>
         </div>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ValidationError))
+        {
+            <div class="form-group row">
+                <div class="col-10">
+                    <span class="text-danger">@ViewBag.ValidationError</span>
+                </div>
+            </div>
+        }
 
         <div class="form-group row">
             <div class="col-10">

@@ -1,21 +1,21 @@
 {
-  "name": "asp.net",
-  "private": true,
-  "dependencies": {
-    "bootstrap": "v4.0.0",
-    "Font-Awesome": "5.0.8",
-    "vue": "v2.5.16",
-    "datatables": "DataTables#1.10.16",
-    "jquery.generateId": "jquery.generate-id#v1.0.3",
-    "bootstrap-multiselect": "v0.9.15",
-    "popper.js": "v1.14.1",
-    "jquery-validation": "1.17.0",
-    "Microsoft.jQuery.Unobtrusive.Validation": "3.2.3",
-    "gridster": "gridster-js#v0.7.0",
-    "chart.js": "chartjs#v2.7.2"
-  },
-  "resolutions": {
-    "bootstrap": "v4.0.0",
-    "Font-Awesome": "5.0.8"
-  }
+    "name": "asp.net",
+    "private": true,
+    "dependencies": {
+        "bootstrap": "v4.0.0",
+        "Font-Awesome": "5.0.8",
+        "vue": "v2.5.16",
+        "datatables": "DataTables#1.10.16",
+        "jquery.generateId": "jquery.generate-id#v1.0.3",
+        "bootstrap-multiselect": "v0.9.15",
+        "popper.js": "v1.14.1",
+        "jquery-validation": "1.17.0",
+        "Microsoft.jQuery.Unobtrusive.Validation": "3.2.3",
+        "gridster": "gridster-js#v0.7.0",
+        "chart.js": "chartjs#v2.7.2"
+    },
+    "resolutions": {
+        "bootstrap": "v4.0.0",
+        "Font-Awesome": "5.0.8"
+    }
 }

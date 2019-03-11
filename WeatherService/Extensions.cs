@@ -5,7 +5,7 @@ namespace WeatherService
 {
     public static class Extensions
     {
-        public static bool EqualsICase(this string self, string str) => self.Equals(str, StringComparison.OrdinalIgnoreCase);
+        public static bool EqualsICase(this string self, string str) => self.Equals(str); // self.Equals(str, StringComparison.OrdinalIgnoreCase);
 
         public static string ToHexString(this byte[] self)
         {

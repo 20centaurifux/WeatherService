@@ -97,11 +97,11 @@ namespace WeatherService.Controllers
             {
                 using (var db = new WeatherDb())
                 {
-                    if (db.User.Any(u => u.UserName.EqualsICase(m.Username) && !u.Id.Equals(m.Id)))
+                    if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower()) && !u.Id.Equals(m.Id)))
                     {
                         ViewData["ValidationError"] = "A user with the given name does already exist.";
                     }
-                    else if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.EqualsICase(m.Email) && !u.Id.Equals(m.Id)))
+                    else if (!string.IsNullOrEmpty(m.Email) && db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()) && !u.Id.Equals(m.Id)))
                     {
                         ViewData["ValidationError"] = "The email address is already assigned.";
                     }
@@ -189,11 +189,11 @@ namespace WeatherService.Controllers
             {
                 using (var db = new WeatherDb())
                 {
-                    if (db.User.Any(u => u.UserName.EqualsICase(m.Username)))
+                    if (db.User.Any(u => u.UserName.ToLower().Equals(m.Username.ToLower())))
                     {
                         ViewData["ValidationError"] = "A user with the given name does already exist.";
                     }
-                    else if (!string.IsNullOrEmpty(m.Email) && (db.User.Any(u => u.Email != null && u.Email.EqualsICase(m.Email))))
+                    else if (!string.IsNullOrEmpty(m.Email) && (db.User.Any(u => u.Email != null && u.Email.ToLower().Equals(m.Email.ToLower()))))
                     {
                         ViewData["ValidationError"] = "The email address is already assigned.";
                     }
